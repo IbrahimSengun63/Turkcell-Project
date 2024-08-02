@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=staj
+    volumes:
+      - postgresql-volume:/var/lib/postgresql/data
+    networks:
+      - staj
+
+
+volumes:
+  postgresql-volume:
+    name: postgresql-staj
+
+
+networks:
+  staj:
+    driver: bridge

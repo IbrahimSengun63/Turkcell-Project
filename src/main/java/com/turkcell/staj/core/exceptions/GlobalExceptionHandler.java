@@ -33,16 +33,5 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionDetails handleValidationException(MethodArgumentNotValidException ex) {
-        ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails();
-        validationExceptionDetails.setDetail("VALIDATION.EXCEPTION");
-        validationExceptionDetails.setValidationErrors(
-                ex.getBindingResult().getFieldErrors().stream()
-                        .collect(Collectors.toMap(error -> Objects.requireNonNull(error.getCodes())[error.getCodes().length - 1],
-                                error -> error.getField() + " field " + error.getDefaultMessage()))
-        );
 
-
-        return validationExceptionDetails;
-    }
 }

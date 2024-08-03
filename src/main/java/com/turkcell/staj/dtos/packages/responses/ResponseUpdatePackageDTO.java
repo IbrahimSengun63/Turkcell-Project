@@ -1,7 +1,5 @@
-package com.turkcell.staj.dtos.packages.requests;
+package com.turkcell.staj.dtos.packages.responses;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class RequestAddPackageDTO {
+public class ResponseUpdatePackageDTO {
 
-    @NotBlank
+    private int packageId;
     private String packageName;
-    @NotBlank
     private String description;
-    @Positive
     private double price;
     private boolean status;
 }

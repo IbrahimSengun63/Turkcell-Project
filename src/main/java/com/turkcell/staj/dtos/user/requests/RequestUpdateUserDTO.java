@@ -12,8 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class RequestAddUserDTO {
+public class RequestUpdateUserDTO {
 
+    private int userId;
     @NotBlank
     private String name;
     @NotBlank

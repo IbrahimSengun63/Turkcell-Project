@@ -1,7 +1,5 @@
-package com.turkcell.staj.dtos.user.requests;
+package com.turkcell.staj.dtos.user.responses;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class RequestAddUserDTO {
+public class GetResponseUserDTO {
 
-    @NotBlank
+    private int userId;
     private String name;
-    @NotBlank
     private String surname;
-    @Positive
     private double balance;
 }

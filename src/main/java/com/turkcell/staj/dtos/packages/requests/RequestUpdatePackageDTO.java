@@ -1,4 +1,4 @@
-package com.turkcell.staj.dtos.user.requests;
+package com.turkcell.staj.dtos.packages.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -12,12 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class RequestAddUserDTO {
+public class RequestUpdatePackageDTO {
 
+    private int packageId;
     @NotBlank
-    private String name;
+    private String packageName;
     @NotBlank
-    private String surname;
+    private String description;
     @Positive
-    private double balance;
+    private double price;
+    private boolean status;
 }

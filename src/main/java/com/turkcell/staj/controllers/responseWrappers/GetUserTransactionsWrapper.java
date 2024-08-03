@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseWrapperForGetUserTransactions {
+public class GetUserTransactionsWrapper {
     private List<ResponseGetAllUserTransactionDTO> userTransactions;
     private double totalPurchaseHistory;
 }

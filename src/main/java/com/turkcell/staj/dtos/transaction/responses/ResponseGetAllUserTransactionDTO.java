@@ -12,12 +12,11 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseAddTransactionDTO {
+public class ResponseGetAllUserTransactionDTO {
     private int transactionId;
-    private int packageId;
     private int userId;
+    private int packageId;
     private double price;
     private Status status;
     private LocalDate createdDate;
-    private double userBalanceAfterTransaction;
 }

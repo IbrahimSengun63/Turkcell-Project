@@ -12,13 +12,14 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class RequestAddTransactionDTO {
-    // TODO: Package active checking rule
+@NoArgsConstructor
+public class RequestUpdateTransactionDTO {
+    @NotNull(message = "Transaction can't be null")
+    private int transactionId;
     @NotNull(message = "Package can't be null")
     private int packageId;
-    // TODO: User Balance checking rule
+    // TODO: User Balance checking rule according to the action in the status
     @NotNull(message = "User can't be null")
     private int userId;
     @NotNull(message = "Price can't be null")

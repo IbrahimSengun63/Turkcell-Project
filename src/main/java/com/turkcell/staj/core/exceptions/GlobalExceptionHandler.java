@@ -31,7 +31,5 @@ public class GlobalExceptionHandler {
         return businessExceptionDetails;
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
 
 }

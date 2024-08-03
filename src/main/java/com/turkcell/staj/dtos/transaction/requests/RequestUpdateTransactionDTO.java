@@ -1,6 +1,7 @@
 package com.turkcell.staj.dtos.transaction.requests;
 
 import com.turkcell.staj.core.enums.Status;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -17,14 +18,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class RequestUpdateTransactionDTO {
     @NotNull(message = "Transaction can't be null")
-    @Size(min = 1, message = "Id must be positive integer {1,...}")
+    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int transactionId;
     @NotNull(message = "Package can't be null")
-    @Size(min = 1, message = "Id must be positive integer {1,...}")
+    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int packageId;
     // TODO: User Balance checking rule according to the action in the status
     @NotNull(message = "User can't be null")
-    @Size(min = 1, message = "Id must be positive integer {1,...}")
+    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;
     @NotNull(message = "Price can't be null")
     @PositiveOrZero(message = "Price can't be negative")

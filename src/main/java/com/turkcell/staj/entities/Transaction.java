@@ -35,5 +35,5 @@ public class Transaction {
     private User user;
     @ManyToOne()
     @JoinColumn(name = "package_id")
-    private Package package_; // package keyword cannot be used as a variable name
+    private Packages packages;
 }

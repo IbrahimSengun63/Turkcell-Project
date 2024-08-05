@@ -14,7 +14,10 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestAddReviewDTO {
+public class RequestUpdateReviewDTO {
+    @NotNull(message = "Review can't be null")
+    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
+    private int reviewId;
     @NotNull(message = "Offer can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int offerId;

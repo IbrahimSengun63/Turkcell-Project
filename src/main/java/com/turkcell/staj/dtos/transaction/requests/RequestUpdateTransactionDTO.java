@@ -14,14 +14,16 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class RequestAddTransactionDTO {
-    // TODO: Offer active checking rule
+@NoArgsConstructor
+public class RequestUpdateTransactionDTO {
+    @NotNull(message = "Transaction can't be null")
+    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
+    private int transactionId;
     @NotNull(message = "Offer can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int offerId;
-    // TODO: User Balance checking rule
+    // TODO: User Balance checking rule according to the action in the status
     @NotNull(message = "User can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;

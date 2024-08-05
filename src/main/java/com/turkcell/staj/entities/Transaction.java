@@ -18,10 +18,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column(name = "package_id")
-    private int packageId;
-    @Column(name = "user_id")
-    private int userId;
     @Column(name = "price")
     private double price;
     @Enumerated(EnumType.STRING)

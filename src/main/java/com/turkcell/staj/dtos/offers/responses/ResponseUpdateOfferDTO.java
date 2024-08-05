@@ -1,4 +1,4 @@
-package com.turkcell.staj.dtos.packages.responses;
+package com.turkcell.staj.dtos.offers.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ResponseAddPackageDTO {
+public class ResponseUpdateOfferDTO {
 
-    private int packageId;
-    private String packageName;
+    private int offerId;
+    private String offerName;
     private String description;
     private double price;
     private boolean status;

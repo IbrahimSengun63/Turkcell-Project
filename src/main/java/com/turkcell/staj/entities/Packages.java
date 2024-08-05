@@ -27,4 +27,6 @@ public class Packages {
     private boolean status;
     @OneToMany(mappedBy = "package")
     private List<Transaction> transactions;
+    @OneToMany(mappedBy = "packages")
+    private List<Review> reviews;
 }

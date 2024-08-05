@@ -25,4 +25,6 @@ public class User {
     private double balance;
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
+    @OneToMany(mappedBy = "users")
+    private List<Review> reviews;
 }

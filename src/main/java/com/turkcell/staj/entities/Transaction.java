@@ -1,5 +1,6 @@
 package com.turkcell.staj.entities;
 
+import com.turkcell.staj.core.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,10 +22,8 @@ public class Transaction {
     @Column(name = "price")
     private double price;
     @Enumerated(EnumType.STRING)
-    /*
     @Column(name = "status")
     private Status status;
-     */
     @Column(name = "created_date", updatable = false)
     @CreationTimestamp
     private LocalDate createdDate;

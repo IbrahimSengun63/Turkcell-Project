@@ -3,7 +3,6 @@ package com.turkcell.staj.dtos.review.requests;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +15,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestAddReviewDTO {
-    @NotNull(message = "Package can't be null")
+    @NotNull(message = "Offer can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
-    private int packageId;
+    private int offerId;
     @NotNull(message = "User can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;

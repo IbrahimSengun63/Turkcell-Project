@@ -1,6 +1,6 @@
 package com.turkcell.staj.controllers.responseWrappers;
 
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllPackageReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPackageReviewsWrapper {
-    private List<ResponseGetAllPackageReviewDTO> packageReviews;
-    private double packageAvgRating;
+public class GetOfferReviewsWrapper {
+    private List<ResponseGetAllOfferReviewDTO> offerReviews;
+    private double offerAvgRating;
 }

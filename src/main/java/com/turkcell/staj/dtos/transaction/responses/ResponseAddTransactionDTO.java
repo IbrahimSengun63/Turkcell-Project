@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ResponseAddTransactionDTO {
     private int transactionId;
-    private int packageId;
+    private int offerId;
     private int userId;
     private double price;
     private Status status;

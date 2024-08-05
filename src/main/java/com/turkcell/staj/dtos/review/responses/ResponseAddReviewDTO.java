@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ResponseAddReviewDTO {
     private int reviewId;
-    private int packageId;
+    private int offerId;
     private int userId;
     private int rating;
     private String comment;

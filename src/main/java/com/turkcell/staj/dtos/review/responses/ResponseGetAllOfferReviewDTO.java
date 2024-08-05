@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseGetAllPackageReviewDTO {
+public class ResponseGetAllOfferReviewDTO {
     private int reviewId;
-    private int packageId;
+    private int offerId;
     private int userId;
     private int rating;
     private String comment;

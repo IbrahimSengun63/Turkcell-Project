@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class ResponseGetAllUserTransactionDTO {
     private int transactionId;
     private int userId;
-    private int packageId;
+    private int offerId;
     private double price;
     private Status status;
     private LocalDate createdDate;

@@ -19,8 +19,8 @@ public class Review {
     @Column(name = "id")
     private int id;
     @ManyToOne
-    @JoinColumn(name = "package_id")
-    private Packages packages;
+    @JoinColumn(name = "offer_id")
+    private Offer offer;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

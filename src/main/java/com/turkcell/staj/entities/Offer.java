@@ -11,22 +11,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "packages")
-public class Packages {
+@Table(name = "offers")
+public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column(name = "package_name")
-    private String packageName;
+    @Column(name = "offer_name")
+    private String offerName;
     @Column(name = "description")
     private String description;
     @Column(name = "price")
     private double price;
     @Column(name = "status")
     private boolean status;
-    @OneToMany(mappedBy = "package")
+    @OneToMany(mappedBy = "offers")
     private List<Transaction> transactions;
-    @OneToMany(mappedBy = "packages")
+    @OneToMany(mappedBy = "offers")
     private List<Review> reviews;
 }

@@ -25,8 +25,8 @@ public class Offer {
     private double price;
     @Column(name = "status")
     private boolean status;
-    @OneToMany(mappedBy = "offers")
+    @OneToMany(mappedBy = "offer")
     private List<Transaction> transactions;
-    @OneToMany(mappedBy = "offers")
+    @OneToMany(mappedBy = "offer")
     private List<Review> reviews;
 }

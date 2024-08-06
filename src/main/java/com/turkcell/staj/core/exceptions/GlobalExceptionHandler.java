@@ -1,6 +1,7 @@
 package com.turkcell.staj.core.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -51,5 +52,16 @@ public class GlobalExceptionHandler {
         // Return the instance containing the validation errors
         return validationExceptionDetails;
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BusinessExceptionDetails handleParseErrors() {
+        BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
+        businessExceptionDetails.setDetail("Parse Error");
+        businessExceptionDetails.setStatus("400");
+        return businessExceptionDetails;
+    }
+
+
 
 }

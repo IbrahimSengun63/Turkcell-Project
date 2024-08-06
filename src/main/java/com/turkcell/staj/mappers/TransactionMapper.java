@@ -16,17 +16,20 @@ public interface TransactionMapper {
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "offerId", target = "offer.id")
     Transaction requestAddTransactionDtoToTransaction(RequestAddTransactionDTO requestAddTransactionDTO);
-    @Mapping(source = "user.id",target = "userId")
-    @Mapping(source = "offer.id",target = "offerId")
-    @Mapping(source = "transaction.id",target = "transactionId")
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "offer.id", target = "offerId")
+    @Mapping(source = "transaction.id", target = "transactionId")
     ResponseAddTransactionDTO transactionToResponseAddTransactionDto(Transaction transaction);
 
-    @Mapping(source = "transactionId",target = "transaction.id")
+
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "offerId", target = "offer.id")
+    @Mapping(source = "transactionId", target = "id")
     Transaction requestUpdateTransactionDtoToTransaction(RequestUpdateTransactionDTO requestUpdateTransactionDTO);
-    @Mapping(source = "user.id",target = "userId")
-    @Mapping(source = "offer.id",target = "offerId")
-    @Mapping(source = "transaction.id",target = "transactionId")
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "offer.id", target = "offerId")
+    @Mapping(source = "transaction.id", target = "transactionId")
     ResponseUpdateTransactionDTO transactionToResponseUpdateTransactionDto(Transaction transaction);
 }

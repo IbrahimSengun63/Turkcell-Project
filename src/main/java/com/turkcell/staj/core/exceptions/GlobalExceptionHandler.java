@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+
+import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -31,5 +33,23 @@ public class GlobalExceptionHandler {
         return businessExceptionDetails;
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ValidationExceptionDetails handleValidationException(MethodArgumentNotValidException ex) {
+        // Create a new instance of ValidationExceptionDetails to encapsulate validation errors
+        ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails();
+        // Set the message for the validation exception
+        validationExceptionDetails.setDetail("VALIDATION.EXCEPTION");
+        // Extract field errors from the exception, convert them into a map, and store them in validationExceptionDetails
+        Map<String, String> validationErrors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        FieldError::getDefaultMessage
+                ));
+        // Set the validation errors
+        validationExceptionDetails.setValidationErrors(validationErrors);
+        // Return the instance containing the validation errors
+        return validationExceptionDetails;
+    }
 
 }

@@ -1,9 +1,7 @@
 package com.turkcell.staj.dtos.transaction.requests;
 
 import com.turkcell.staj.core.enums.Status;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,16 +16,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class RequestAddTransactionDTO {
     // TODO: Offer active checking rule
-    @NotNull(message = "Offer can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int offerId;
-    // TODO: User Balance checking rule
-    @NotNull(message = "User can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;
-    @NotNull(message = "Price can't be null")
     @PositiveOrZero(message = "Price can't be negative")
-    private Double price;
+    private double price;
     // TODO: Valid status checking rule
     @NotNull(message = "Status can't be null")
     private Status status;

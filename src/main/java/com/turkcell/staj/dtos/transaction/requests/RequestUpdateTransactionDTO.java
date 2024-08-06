@@ -17,19 +17,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestUpdateTransactionDTO {
-    @NotNull(message = "Transaction can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int transactionId;
-    @NotNull(message = "Offer can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int offerId;
     // TODO: User Balance checking rule according to the action in the status
-    @NotNull(message = "User can't be null")
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;
-    @NotNull(message = "Price can't be null")
     @PositiveOrZero(message = "Price can't be negative")
-    private Double price;
+    private double price;
     // TODO: Valid status checking rule
     @NotNull(message = "Status can't be null")
     private Status status;

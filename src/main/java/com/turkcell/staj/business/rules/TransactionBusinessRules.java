@@ -33,4 +33,10 @@ public final class TransactionBusinessRules {
         }
     }
 
+    public static void checkIfStatusCanceledOrRejected(Status status) {
+        if (!(status.equals(Status.CANCELED) || status.equals(Status.REJECTED))) {
+            throw new BusinessException("To update a transaction status must be CANCELED or REJECTED");
+        }
+    }
+
 }

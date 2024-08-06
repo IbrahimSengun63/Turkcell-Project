@@ -4,8 +4,10 @@ import com.turkcell.staj.business.abstracts.TransactionService;
 import com.turkcell.staj.business.rules.TransactionBusinessRules;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
+import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
 
+import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
 import com.turkcell.staj.entities.User;
@@ -40,6 +42,21 @@ public class TransactionsManager implements TransactionService {
         ResponseAddTransactionDTO responseAddTransactionDTO = this.transactionMapper.transactionToResponseAddTransactionDto(savedTransaction);
         responseAddTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
         return responseAddTransactionDTO;
+    }
+
+    @Override
+    public ResponseUpdateTransactionDTO updateTransaction(RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
+        Transaction transaction = this.transactionMapper.requestUpdateTransactionDtoToTransaction(requestUpdateTransactionDTO);
+        TransactionBusinessRules.checkIfStatusCanceledOrRejected(transaction.getStatus());
+        Offer offer = this.offerRepository.findById(transaction.getOffer().getId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        TransactionBusinessRules.checkIfOfferIsActive(offer.isStatus());
+        User user = this.userRepository.findById(transaction.getUser().getId()).orElseThrow(() -> new BusinessException("User can't be null"));
+        user.setBalance(user.getBalance() + transaction.getPrice());
+        this.userRepository.save(user);
+        Transaction updatedTransaction = this.transactionRepository.save(transaction);
+        ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
+        responseUpdateTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
+        return responseUpdateTransactionDTO;
     }
 
 }

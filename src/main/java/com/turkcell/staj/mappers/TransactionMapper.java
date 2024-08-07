@@ -4,6 +4,7 @@ import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseGetAllUserTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseReturnTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Transaction;
 import org.mapstruct.*;
@@ -42,6 +43,12 @@ public interface TransactionMapper {
     ResponseGetAllUserTransactionDTO transactionToGetAllUserTransactionDto(Transaction transaction);
 
     List<ResponseGetAllUserTransactionDTO> transactionListToResponseDtoList(List<Transaction> transactionList);
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "offer.id", target = "offerId")
+    @Mapping(source = "id", target = "transactionId")
+    ResponseReturnTransactionDTO transactionToResponseReturnTransactionDto(Transaction transaction);
+
 
 }
 

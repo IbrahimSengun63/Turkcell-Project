@@ -50,4 +50,17 @@ public final class TransactionBusinessRules {
                 .mapToDouble(Transaction::getPrice)
                 .sum();
     }
+
+    public static void checkIfTransactionBelongsToUser(int transactionUserId, int userId){
+        if (transactionUserId != userId){
+            throw new BusinessException("Transaction does not belong to this user.");
+        }
+    }
+
+    public static void checkIfReturnStatusCompleted(Status status) {
+        if (!status.equals(Status.COMPLETED)) {
+            throw new BusinessException("To return a transaction status must be COMPLETED");
+        }
+    }
+
 }

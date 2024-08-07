@@ -5,6 +5,7 @@ import com.turkcell.staj.controllers.responseWrappers.GetUserTransactionsWrapper
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseReturnTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -35,5 +36,13 @@ public class TransactionController {
     public ResponseEntity<GetUserTransactionsWrapper> getHistory(@PathVariable @Valid @Min(value = 1) int id){
         GetUserTransactionsWrapper wrapper = this.transactionService.getHistory(id);
         return ResponseEntity.ok(wrapper);
+    }
+
+    @PostMapping("/v1/transaction/{transactionId}/return")
+    public ResponseEntity<ResponseReturnTransactionDTO> returnTransaction(
+            @PathVariable @Valid @Min(value = 1) int transactionId,
+            @RequestParam @Valid @Min(value = 1) int userId){
+        ResponseReturnTransactionDTO transactionDTO = this.transactionService.returnTransaction(transactionId, userId);
+        return ResponseEntity.ok(transactionDTO);
     }
 }

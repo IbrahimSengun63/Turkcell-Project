@@ -10,6 +10,7 @@ import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
 
 import com.turkcell.staj.dtos.transaction.responses.ResponseGetAllUserTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseReturnTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
@@ -74,6 +75,32 @@ public class TransactionsManager implements TransactionService {
         wrapper.setUserTransactions(response);
         wrapper.setTotalPurchaseHistory(total);
         return wrapper;
+    }
+
+    @Override
+    public ResponseReturnTransactionDTO returnTransaction(int transactionId, int userId) {
+        // Get transaction
+        Transaction transaction = this.transactionRepository.findById(transactionId).orElseThrow(() -> new BusinessException("Transaction can't be null"));
+        // Checks
+        TransactionBusinessRules.checkIfTransactionBelongsToUser(transaction.getUser().getId(),userId);
+        TransactionBusinessRules.checkIfReturnStatusCompleted(transaction.getStatus());
+        // Get user
+        User user = this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User can't be null"));
+        // Calculate balance after return
+        double resultBalance = TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(
+                transaction.getStatus(),
+                user.getBalance(),
+                transaction.getPrice()
+                );
+        // Save new balance to db
+        user.setBalance(resultBalance);
+        this.userRepository.save(user);
+        // Mark transaction as returned
+        transaction.setStatus(Status.RETURNED);
+        Transaction updatedTransaction = this.transactionRepository.save(transaction);
+        ResponseReturnTransactionDTO responseReturnTransactionDTO = this.transactionMapper.transactionToResponseReturnTransactionDto(updatedTransaction);
+        responseReturnTransactionDTO.setUserBalanceAfterTransaction(resultBalance);
+        return responseReturnTransactionDTO;
     }
 
 }

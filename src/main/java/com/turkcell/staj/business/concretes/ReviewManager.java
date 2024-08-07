@@ -5,10 +5,12 @@ import com.turkcell.staj.business.rules.ReviewBusinessRules;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.mappers.ReviewMapper;
 import com.turkcell.staj.repositories.OfferRepository;
 import com.turkcell.staj.repositories.ReviewRepository;
+import com.turkcell.staj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class ReviewManager implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final OfferRepository offerRepository;
+    private final UserRepository userRepository;
     private final ReviewMapper reviewMapper;
 
 
@@ -33,5 +36,12 @@ public class ReviewManager implements ReviewService {
         wrapper.setOfferReviews(responses);
         wrapper.setOfferAvgRating(avgRating);
         return wrapper;
+    }
+
+    @Override
+    public List<ResponseGetAllUserReviewDTO> getAllUserReviews(int userId) {
+        this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User can't be null"));
+        List<Review> reviews = this.reviewRepository.findByUserId(userId);
+        return this.reviewMapper.reviewsToResponseGetAllUserReviewsDto(reviews);
     }
 }

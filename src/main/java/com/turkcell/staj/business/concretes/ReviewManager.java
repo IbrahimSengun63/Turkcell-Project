@@ -5,7 +5,6 @@ import com.turkcell.staj.business.rules.ReviewBusinessRules;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
-import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.mappers.ReviewMapper;
 import com.turkcell.staj.repositories.OfferRepository;
@@ -29,7 +28,7 @@ public class ReviewManager implements ReviewService {
         this.offerRepository.findById(offerId).orElseThrow(() -> new BusinessException("Offer can't be null"));
         List<Review> reviews = this.reviewRepository.findByOfferId(offerId);
         double avgRating = ReviewBusinessRules.calculateOfferAvgRating(reviews);
-        List<ResponseGetAllOfferReviewDTO> responses = this.reviewMapper.reviewsToResponseGetAllDtoList(reviews);
+        List<ResponseGetAllOfferReviewDTO> responses = this.reviewMapper.reviewsToResponseGetAllOfferReviewsDto(reviews);
         GetOfferReviewsWrapper wrapper = new GetOfferReviewsWrapper();
         wrapper.setOfferReviews(responses);
         wrapper.setOfferAvgRating(avgRating);

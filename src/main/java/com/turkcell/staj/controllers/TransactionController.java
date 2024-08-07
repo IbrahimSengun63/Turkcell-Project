@@ -32,7 +32,7 @@ public class TransactionController {
     }
 
     @GetMapping("/v1/history/{id}")
-    public ResponseEntity<GetUserTransactionsWrapper> getHistory(@PathVariable int id){
+    public ResponseEntity<GetUserTransactionsWrapper> getHistory(@PathVariable @Valid @Min(value = 1) int id){
         GetUserTransactionsWrapper wrapper = this.transactionService.getHistory(id);
         return ResponseEntity.ok(wrapper);
     }

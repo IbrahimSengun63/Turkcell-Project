@@ -1,6 +1,7 @@
 package com.turkcell.staj.controllers;
 
 import com.turkcell.staj.business.abstracts.TransactionService;
+import com.turkcell.staj.controllers.responseWrappers.GetUserTransactionsWrapper;
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
@@ -28,5 +29,11 @@ public class TransactionController {
         requestUpdateTransactionDTO.setTransactionId(id);
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionService.updateTransaction(requestUpdateTransactionDTO);
         return ResponseEntity.ok(responseUpdateTransactionDTO);
+    }
+
+    @GetMapping("/v1/history/{id}")
+    public ResponseEntity<GetUserTransactionsWrapper> getHistory(@PathVariable int id){
+        GetUserTransactionsWrapper wrapper = this.transactionService.getHistory(id);
+        return ResponseEntity.ok(wrapper);
     }
 }

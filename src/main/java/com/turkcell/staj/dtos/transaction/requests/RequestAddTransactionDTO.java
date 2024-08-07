@@ -18,8 +18,6 @@ public class RequestAddTransactionDTO {
     private int offerId;
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;
-    @PositiveOrZero(message = "Price can't be negative")
-    private double price;
     @NotNull(message = "Status can't be null")
     private Status status;
     private LocalDate createdDate;

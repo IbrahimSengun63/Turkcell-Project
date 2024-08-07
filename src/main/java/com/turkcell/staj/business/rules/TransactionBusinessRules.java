@@ -2,9 +2,11 @@ package com.turkcell.staj.business.rules;
 
 import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.core.exceptions.BusinessException;
+import com.turkcell.staj.entities.Transaction;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public final class TransactionBusinessRules {
@@ -41,5 +43,11 @@ public final class TransactionBusinessRules {
 
     public static double updateBalanceIfTransactionStatusChangedFromCompleted(Status status, double userBalance, double price) {
         return status.equals(Status.COMPLETED) ? userBalance + price : userBalance;
+    }
+
+    public static double calculateUserTotalPurchase(List<Transaction> transactionList){
+        return transactionList.stream()
+                .mapToDouble(Transaction::getPrice)
+                .sum();
     }
 }

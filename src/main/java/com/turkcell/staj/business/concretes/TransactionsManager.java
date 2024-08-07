@@ -2,11 +2,14 @@ package com.turkcell.staj.business.concretes;
 
 import com.turkcell.staj.business.abstracts.TransactionService;
 import com.turkcell.staj.business.rules.TransactionBusinessRules;
+import com.turkcell.staj.controllers.responseWrappers.GetUserTransactionsWrapper;
+import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
 
+import com.turkcell.staj.dtos.transaction.responses.ResponseGetAllUserTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
@@ -17,6 +20,8 @@ import com.turkcell.staj.repositories.TransactionRepository;
 import com.turkcell.staj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +39,7 @@ public class TransactionsManager implements TransactionService {
         TransactionBusinessRules.checkIfDateIsCorrect(transaction.getCreatedDate());
         Offer offer = this.offerRepository.findById(transaction.getOffer().getId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
         TransactionBusinessRules.checkIfOfferIsActive(offer.isStatus());
+        transaction.setPrice(offer.getPrice());
         User user = this.userRepository.findById(transaction.getUser().getId()).orElseThrow(() -> new BusinessException("User can't be null"));
         TransactionBusinessRules.checkIfUserHasEnoughBalance(user.getBalance(), transaction.getPrice());
         user.setBalance(user.getBalance() - transaction.getPrice());
@@ -56,6 +62,18 @@ public class TransactionsManager implements TransactionService {
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
         responseUpdateTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
         return responseUpdateTransactionDTO;
+    }
+
+    @Override
+    public GetUserTransactionsWrapper getHistory(int userId) {
+        this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User can't be null"));
+        List<Transaction> transactions = this.transactionRepository.findByUserIdAndStatus(userId, Status.COMPLETED);
+        double total = TransactionBusinessRules.calculateUserTotalPurchase(transactions);
+        List<ResponseGetAllUserTransactionDTO> response = this.transactionMapper.transactionListToResponseDtoList(transactions);
+        GetUserTransactionsWrapper wrapper = new GetUserTransactionsWrapper();
+        wrapper.setUserTransactions(response);
+        wrapper.setTotalPurchaseHistory(total);
+        return wrapper;
     }
 
 }

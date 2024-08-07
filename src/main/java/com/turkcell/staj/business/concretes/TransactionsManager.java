@@ -35,16 +35,26 @@ public class TransactionsManager implements TransactionService {
 
     @Override
     public ResponseAddTransactionDTO addTransaction(RequestAddTransactionDTO requestAddTransactionDTO) {
+        // req to transaction mapping
         Transaction transaction = this.transactionMapper.requestAddTransactionDtoToTransaction(requestAddTransactionDTO);
+        // checks
         TransactionBusinessRules.checkIfStatusCompleted(transaction.getStatus());
         TransactionBusinessRules.checkIfDateIsCorrect(transaction.getCreatedDate());
+        // get offer from db
         Offer offer = this.offerRepository.findById(transaction.getOffer().getId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        // checks offer status
         TransactionBusinessRules.checkIfOfferIsActive(offer.isStatus());
+        // set transaction price with offer price
         transaction.setPrice(offer.getPrice());
+        // get user from db
         User user = this.userRepository.findById(transaction.getUser().getId()).orElseThrow(() -> new BusinessException("User can't be null"));
+        // check user balance
         TransactionBusinessRules.checkIfUserHasEnoughBalance(user.getBalance(), transaction.getPrice());
+        // set user balance
         user.setBalance(user.getBalance() - transaction.getPrice());
+        // update user
         this.userRepository.save(user);
+        // add transaction
         Transaction savedTransaction = this.transactionRepository.save(transaction);
         ResponseAddTransactionDTO responseAddTransactionDTO = this.transactionMapper.transactionToResponseAddTransactionDto(savedTransaction);
         responseAddTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
@@ -76,8 +86,11 @@ public class TransactionsManager implements TransactionService {
 
     @Override
     public GetUserTransactionsWrapper getHistory(int userId) {
+        // check user
         this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User can't be null"));
+        // get all transaction belong to user and status is completed
         List<Transaction> transactions = this.transactionRepository.findByUserIdAndStatus(userId, Status.COMPLETED);
+        // calculate total purchase history
         double total = TransactionBusinessRules.calculateUserTotalPurchase(transactions);
         List<ResponseGetAllUserTransactionDTO> response = this.transactionMapper.transactionListToResponseDtoList(transactions);
         GetUserTransactionsWrapper wrapper = new GetUserTransactionsWrapper();

@@ -39,4 +39,7 @@ public final class TransactionBusinessRules {
         }
     }
 
+    public static double updateBalanceIfTransactionStatusChangedFromCompleted(Status status, double userBalance, double price) {
+        return status.equals(Status.COMPLETED) ? userBalance + price : userBalance;
+    }
 }

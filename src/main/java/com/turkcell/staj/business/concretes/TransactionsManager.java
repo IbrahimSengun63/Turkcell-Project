@@ -48,10 +48,10 @@ public class TransactionsManager implements TransactionService {
     public ResponseUpdateTransactionDTO updateTransaction(RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
         TransactionBusinessRules.checkIfStatusCanceledOrRejected(requestUpdateTransactionDTO.getStatus());
         Transaction getTransaction = this.transactionRepository.findById(requestUpdateTransactionDTO.getTransactionId()).orElseThrow(() -> new BusinessException("Transaction can't be null"));
-        this.transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO,getTransaction);
         User user = this.userRepository.findById(getTransaction.getUser().getId()).orElseThrow(() -> new BusinessException("User can't be null"));
-        user.setBalance(user.getBalance() + getTransaction.getPrice());
+        user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(getTransaction.getStatus(),user.getBalance(),getTransaction.getPrice()));
         this.userRepository.save(user);
+        this.transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO,getTransaction);
         Transaction updatedTransaction = this.transactionRepository.save(getTransaction);
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
         responseUpdateTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());

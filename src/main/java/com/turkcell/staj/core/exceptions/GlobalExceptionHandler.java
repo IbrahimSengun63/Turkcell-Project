@@ -89,7 +89,6 @@ public class GlobalExceptionHandler {
         return validationExceptionDetails;
     }
 
-    //MethodArgumentTypeMismatchException
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BusinessExceptionDetails handleMethodArgumentTypeMismatchException(HttpServletRequest request) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 
 import java.util.Map;
@@ -86,6 +87,17 @@ public class GlobalExceptionHandler {
         // Set and return validation errors
         validationExceptionDetails.setValidationErrors(validationErrors);
         return validationExceptionDetails;
+    }
+
+    //MethodArgumentTypeMismatchException
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BusinessExceptionDetails handleMethodArgumentTypeMismatchException(HttpServletRequest request) {
+        BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
+        businessExceptionDetails.setDetail("Method argument type error");
+        businessExceptionDetails.setStatus("400");
+        businessExceptionDetails.setType(request.getRequestURI());
+        return businessExceptionDetails;
     }
 
 

@@ -53,13 +53,22 @@ public class TransactionsManager implements TransactionService {
 
     @Override
     public ResponseUpdateTransactionDTO updateTransaction(RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
+        // check status
         TransactionBusinessRules.checkIfStatusCanceledOrRejected(requestUpdateTransactionDTO.getStatus());
-        Transaction getTransaction = this.transactionRepository.findById(requestUpdateTransactionDTO.getTransactionId()).orElseThrow(() -> new BusinessException("Transaction can't be null"));
-        User user = this.userRepository.findById(getTransaction.getUser().getId()).orElseThrow(() -> new BusinessException("User can't be null"));
-        user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(getTransaction.getStatus(),user.getBalance(),getTransaction.getPrice()));
+        // get user and check if updatable user exists
+        User user = this.userRepository.findById(requestUpdateTransactionDTO.getUserId()).orElseThrow(() -> new BusinessException("User can't be null"));
+        // check if updatable offer exists
+        this.offerRepository.findById(requestUpdateTransactionDTO.getOfferId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        // get old transaction
+        Transaction transaction = this.transactionRepository.findById(requestUpdateTransactionDTO.getTransactionId()).orElseThrow(() -> new BusinessException("Transaction can't be null"));
+        // update user balance only if status is completed
+        user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(transaction.getStatus(),user.getBalance(),transaction.getPrice()));
+        // save updated user
         this.userRepository.save(user);
-        this.transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO,getTransaction);
-        Transaction updatedTransaction = this.transactionRepository.save(getTransaction);
+        // convert transaction from request
+        this.transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO,transaction);
+        // update transaction
+        Transaction updatedTransaction = this.transactionRepository.save(transaction);
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
         responseUpdateTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
         return responseUpdateTransactionDTO;

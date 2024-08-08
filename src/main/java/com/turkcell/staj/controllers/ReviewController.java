@@ -21,25 +21,25 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @GetMapping("/v1/reviews/offer/{offerId}")
+    @GetMapping("/v1/offer/{offerId}")
     public ResponseEntity<GetOfferReviewsWrapper> getAllOfferReviews(@PathVariable @Valid @Min(value = 1) int offerId) {
         GetOfferReviewsWrapper wrapper = this.reviewService.getAllOfferReviews(offerId);
         return ResponseEntity.ok(wrapper);
     }
 
-    @GetMapping("/v1/reviews/user/{userId}")
+    @GetMapping("/v1/user/{userId}")
     public ResponseEntity<List<ResponseGetAllUserReviewDTO>> getAllUserReviews(@PathVariable @Valid @Min(value = 1) int userId) {
         List<ResponseGetAllUserReviewDTO> responses = this.reviewService.getAllUserReviews(userId);
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/v1/reviews/add")
+    @PostMapping("/v1/add")
     public ResponseEntity<ResponseAddReviewDTO> addReview(@Valid @RequestBody RequestAddReviewDTO request) {
         ResponseAddReviewDTO response = this.reviewService.addReview(request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/v1/reviews/update/{id}")
+    @PostMapping("/v1/update/{id}")
     public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
         ResponseUpdateReviewDTO response = this.reviewService.updateReview(id,request);
         return ResponseEntity.ok(response);

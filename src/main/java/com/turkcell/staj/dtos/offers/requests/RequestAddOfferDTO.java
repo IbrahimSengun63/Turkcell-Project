@@ -20,6 +20,7 @@ public class RequestAddOfferDTO {
     @Size(max = 255, message = "length must be in the range {1,255}")
     private String offerName;
     @NotBlank(message = "Description can't be blank.")
+    @Size(max = 255, message = "length must be in the range {1,255}")
     private String description;
     @PositiveOrZero(message = "Price must be a positive value.")
     private double price;

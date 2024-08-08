@@ -9,5 +9,6 @@ import com.turkcell.staj.entities.Offer;
 public interface OfferService {
     ResponseAddOfferDTO addOffer(RequestAddOfferDTO requestAddOfferDTO);
     ResponseUpdateOfferDTO updateOffer(int id, RequestUpdateOfferDTO requestUpdateOfferDTO);
+    void deleteOffer(int id);
     Offer getOfferById(int id);
 }

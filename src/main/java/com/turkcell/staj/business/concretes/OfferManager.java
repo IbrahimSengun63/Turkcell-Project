@@ -1,6 +1,7 @@
 package com.turkcell.staj.business.concretes;
 
 import com.turkcell.staj.business.abstracts.OfferService;
+import com.turkcell.staj.business.rules.OfferBusinessRules;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.offers.requests.RequestAddOfferDTO;
 import com.turkcell.staj.dtos.offers.requests.RequestUpdateOfferDTO;
@@ -31,6 +32,14 @@ public class OfferManager implements OfferService {
         Offer offer = this.getOfferById(id);
         this.offerMapper.offerFromRequestUpdateOfferDto(requestUpdateOfferDTO,offer);
         return this.offerMapper.offerToResponseUpdateOfferDto(offer);
+    }
+
+    @Override
+    public void deleteOffer(int id) {
+        Offer offer = this.getOfferById(id);
+        OfferBusinessRules.checkIfOfferDeleted(offer.isStatus());
+        offer.setStatus(false);
+        this.offerRepository.save(offer);
     }
 
     @Override

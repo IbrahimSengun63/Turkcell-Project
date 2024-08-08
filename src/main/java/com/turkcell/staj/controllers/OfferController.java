@@ -26,7 +26,13 @@ public class OfferController {
 
     @PostMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateOfferDTO> updateOffer(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateOfferDTO requestUpdateOfferDTO) {
-        ResponseUpdateOfferDTO response = this.offerService.updateOffer(id,requestUpdateOfferDTO);
+        ResponseUpdateOfferDTO response = this.offerService.updateOffer(id, requestUpdateOfferDTO);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteOffer(@PathVariable @Valid @Min(value = 1) int id) {
+        this.offerService.deleteOffer(id);
+        return ResponseEntity.ok("Offer with ID " + id + " has been deleted successfully.");
     }
 }

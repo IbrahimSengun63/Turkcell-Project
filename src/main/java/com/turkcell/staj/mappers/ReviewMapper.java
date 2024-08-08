@@ -1,5 +1,7 @@
 package com.turkcell.staj.mappers;
 
+import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
 import com.turkcell.staj.entities.Review;
@@ -26,4 +28,14 @@ public interface ReviewMapper {
     ResponseGetAllUserReviewDTO reviewToResponseGetAllUserReviewDto(Review review);
 
     List<ResponseGetAllUserReviewDTO> reviewsToResponseGetAllUserReviewsDto(List<Review> reviews);
+
+    @Mapping(source = "id", target = "reviewId")
+    @Mapping(source = "offer.id", target = "offerId")
+    @Mapping(source = "user.id", target = "userId")
+    ResponseAddReviewDTO reviewToResponseAddReviewDTO(Review review);
+
+    @Mapping(source = "reviewId", target = "id")
+    @Mapping(source = "offerId", target = "offer.id")
+    @Mapping(source = "userId", target = "user.id")
+    Review requestAddReviewDtoToReview(RequestAddReviewDTO request);
 }

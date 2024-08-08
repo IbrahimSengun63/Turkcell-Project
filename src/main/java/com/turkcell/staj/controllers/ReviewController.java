@@ -2,15 +2,14 @@ package com.turkcell.staj.controllers;
 
 import com.turkcell.staj.business.abstracts.ReviewService;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
+import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +29,12 @@ public class ReviewController {
     public ResponseEntity<List<ResponseGetAllUserReviewDTO>> getAllUserReviews(@PathVariable @Valid @Min(value = 1) int userId) {
         List<ResponseGetAllUserReviewDTO> responses = this.reviewService.getAllUserReviews(userId);
         return ResponseEntity.ok(responses);
+    }
+
+    @PostMapping("/v1/reviews/add")
+    public ResponseEntity<ResponseAddReviewDTO> addReview(@Valid @RequestBody RequestAddReviewDTO request) {
+        ResponseAddReviewDTO response = this.reviewService.addReview(request);
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -1,9 +1,12 @@
 package com.turkcell.staj.business.concretes;
 
 import com.turkcell.staj.business.abstracts.ReviewService;
+import com.turkcell.staj.business.abstracts.TransactionService;
 import com.turkcell.staj.business.rules.ReviewBusinessRules;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.exceptions.BusinessException;
+import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
 import com.turkcell.staj.entities.Review;
@@ -20,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewManager implements ReviewService {
 
+    private final TransactionService transactionService;
     private final ReviewRepository reviewRepository;
     private final OfferRepository offerRepository;
     private final UserRepository userRepository;
@@ -43,5 +47,16 @@ public class ReviewManager implements ReviewService {
         this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User can't be null"));
         List<Review> reviews = this.reviewRepository.findByUserId(userId);
         return this.reviewMapper.reviewsToResponseGetAllUserReviewsDto(reviews);
+    }
+
+    @Override
+    public ResponseAddReviewDTO addReview(RequestAddReviewDTO request) {
+        this.userRepository.findById(request.getUserId()).orElseThrow(() -> new BusinessException("User can't be null"));
+        this.offerRepository.findById(request.getOfferId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        boolean result = this.transactionService.checkIfUserPurchasedOffer(request.getUserId(), request.getOfferId());
+        ReviewBusinessRules.assertIfUserPurchasedOffer(result);
+        Review review = this.reviewMapper.requestAddReviewDtoToReview(request);
+        Review savedReview = this.reviewRepository.save(review);
+        return this.reviewMapper.reviewToResponseAddReviewDTO(savedReview);
     }
 }

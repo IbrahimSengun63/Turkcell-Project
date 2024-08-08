@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction,Integer> {
     List<Transaction> findByUserIdAndStatus(int id, Status status);
+    boolean existsByUserIdAndOfferId(int userId, int offerId);
 }

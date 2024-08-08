@@ -125,4 +125,9 @@ public class TransactionsManager implements TransactionService {
         return responseReturnTransactionDTO;
     }
 
+    @Override
+    public boolean checkIfUserPurchasedOffer(int userId, int offerId) {
+        return this.transactionRepository.existsByUserIdAndOfferId(userId, offerId);
+    }
+
 }

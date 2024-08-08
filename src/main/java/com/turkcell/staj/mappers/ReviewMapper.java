@@ -34,7 +34,6 @@ public interface ReviewMapper {
     @Mapping(source = "user.id", target = "userId")
     ResponseAddReviewDTO reviewToResponseAddReviewDTO(Review review);
 
-    @Mapping(source = "reviewId", target = "id")
     @Mapping(source = "offerId", target = "offer.id")
     @Mapping(source = "userId", target = "user.id")
     Review requestAddReviewDtoToReview(RequestAddReviewDTO request);

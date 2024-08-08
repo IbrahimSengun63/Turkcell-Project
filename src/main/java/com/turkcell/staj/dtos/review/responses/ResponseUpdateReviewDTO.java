@@ -9,9 +9,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ResponseAddReviewDTO {
+@NoArgsConstructor
+public class ResponseUpdateReviewDTO {
     private int reviewId;
     private int offerId;
     private int userId;

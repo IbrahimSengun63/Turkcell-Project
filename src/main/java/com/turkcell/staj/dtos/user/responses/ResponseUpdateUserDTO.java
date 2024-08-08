@@ -10,8 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ResponseAddUserDTO {
-
+public class ResponseUpdateUserDTO {
     private int userId;
     private String name;
     private String surname;

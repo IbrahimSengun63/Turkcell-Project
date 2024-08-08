@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseAddTransactionDTO {
+public class ResponseReturnTransactionDTO {
     private int transactionId;
     private int offerId;
     private int userId;

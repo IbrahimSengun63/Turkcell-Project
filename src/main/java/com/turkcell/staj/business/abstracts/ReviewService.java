@@ -5,6 +5,7 @@ import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
 import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseGetReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface ReviewService {
     List<ResponseGetAllUserReviewDTO> getAllUserReviews(int userId);
     ResponseAddReviewDTO addReview(RequestAddReviewDTO request);
     ResponseUpdateReviewDTO updateReview(int id, RequestUpdateReviewDTO request);
+    ResponseGetReviewDTO getReview(int id);
 }

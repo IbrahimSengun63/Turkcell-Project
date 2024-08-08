@@ -6,6 +6,7 @@ import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
 import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseGetReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -42,6 +43,12 @@ public class ReviewController {
     @PostMapping("/v1/update/{id}")
     public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
         ResponseUpdateReviewDTO response = this.reviewService.updateReview(id,request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/v1/{id}")
+    public ResponseEntity<ResponseGetReviewDTO> getReview(@PathVariable @Valid int id) {
+        ResponseGetReviewDTO response = this.reviewService.getReview(id);
         return ResponseEntity.ok(response);
     }
 }

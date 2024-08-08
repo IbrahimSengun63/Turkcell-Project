@@ -7,10 +7,7 @@ import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
 import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
+import com.turkcell.staj.dtos.review.responses.*;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.mappers.ReviewMapper;
 import com.turkcell.staj.repositories.OfferRepository;
@@ -73,5 +70,11 @@ public class ReviewManager implements ReviewService {
         this.reviewMapper.updateReviewFromRequestUpdateReviewDto(request, review);
         Review savedReview = this.reviewRepository.save(review);
         return this.reviewMapper.reviewToResponseUpdateReviewDTO(savedReview);
+    }
+
+    @Override
+    public ResponseGetReviewDTO getReview(int id) {
+        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new BusinessException("Review can't be null"));
+        return this.reviewMapper.reviewToResponseGetReviewDto(review);
     }
 }

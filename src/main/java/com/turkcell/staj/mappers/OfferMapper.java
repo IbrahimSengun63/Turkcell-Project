@@ -5,8 +5,7 @@ import com.turkcell.staj.dtos.offers.requests.RequestUpdateOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseAddOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseUpdateOfferDTO;
 import com.turkcell.staj.entities.Offer;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -19,7 +18,8 @@ public interface OfferMapper {
     ResponseAddOfferDTO offerToResponseAddOfferDto(Offer offer);
 
     @Mapping(source = "offerId", target = "id")
-    Offer requestUpdateOfferDtoToOffer(RequestUpdateOfferDTO requestUpdateOfferDTO);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void offerFromRequestUpdateOfferDto(RequestUpdateOfferDTO requestUpdateOfferDTO, @MappingTarget Offer offer);
 
     @Mapping(source = "id", target = "offerId")
     ResponseUpdateOfferDTO offerToResponseUpdateOfferDto(Offer offer);

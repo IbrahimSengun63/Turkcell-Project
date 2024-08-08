@@ -6,9 +6,11 @@ import com.turkcell.staj.business.rules.ReviewBusinessRules;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.mappers.ReviewMapper;
 import com.turkcell.staj.repositories.OfferRepository;
@@ -58,5 +60,18 @@ public class ReviewManager implements ReviewService {
         Review review = this.reviewMapper.requestAddReviewDtoToReview(request);
         Review savedReview = this.reviewRepository.save(review);
         return this.reviewMapper.reviewToResponseAddReviewDTO(savedReview);
+    }
+
+    @Override
+    public ResponseUpdateReviewDTO updateReview(int id, RequestUpdateReviewDTO request) {
+        // Get review from db and make checks
+        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new BusinessException("Review can't be null"));
+        this.userRepository.findById(request.getUserId()).orElseThrow(() -> new BusinessException("User can't be null"));
+        this.offerRepository.findById(request.getOfferId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        boolean result = this.transactionService.checkIfUserPurchasedOffer(request.getUserId(), request.getOfferId());
+        ReviewBusinessRules.assertIfUserPurchasedOffer(result);
+        this.reviewMapper.updateReviewFromRequestUpdateReviewDto(request, review);
+        Review savedReview = this.reviewRepository.save(review);
+        return this.reviewMapper.reviewToResponseUpdateReviewDTO(savedReview);
     }
 }

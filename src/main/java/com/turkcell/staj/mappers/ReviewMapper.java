@@ -1,12 +1,15 @@
 package com.turkcell.staj.mappers;
 
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
+import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.entities.Review;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.turkcell.staj.entities.Transaction;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -37,4 +40,21 @@ public interface ReviewMapper {
     @Mapping(source = "offerId", target = "offer.id")
     @Mapping(source = "userId", target = "user.id")
     Review requestAddReviewDtoToReview(RequestAddReviewDTO request);
+
+    @Mapping(source = "id", target = "reviewId")
+    @Mapping(source = "offer.id", target = "offerId")
+    @Mapping(source = "user.id", target = "userId")
+    ResponseUpdateReviewDTO reviewToResponseUpdateReviewDTO(Review review);
+
+    @Mapping(source = "reviewId", target = "id")
+    @Mapping(source = "offerId", target = "offer.id")
+    @Mapping(source = "userId", target = "user.id")
+    Review requestUpdateReviewDtoToReview(RequestUpdateReviewDTO request);
+
+    @Mapping(source = "userId", target = "user.id")
+    @Mapping(source = "offerId", target = "offer.id")
+    @Mapping(source = "reviewId", target = "id")
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateReviewFromRequestUpdateReviewDto(RequestUpdateReviewDTO requestUpdateReviewDTO, @MappingTarget Review review);
+
 }

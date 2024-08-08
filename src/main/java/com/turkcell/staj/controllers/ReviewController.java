@@ -3,8 +3,10 @@ package com.turkcell.staj.controllers;
 import com.turkcell.staj.business.abstracts.ReviewService;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +39,9 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/v1/reviews/update/{id}")
+    public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
+        ResponseUpdateReviewDTO response = this.reviewService.updateReview(id,request);
+        return ResponseEntity.ok(response);
+    }
 }

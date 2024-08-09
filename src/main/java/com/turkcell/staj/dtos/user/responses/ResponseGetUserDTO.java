@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class GetResponseUserDTO {
+public class ResponseGetUserDTO {
 
     private int userId;
     private String name;

@@ -16,10 +16,10 @@ import lombok.Setter;
 public class RequestAddUserDTO {
 
     @NotBlank
-    @Size(min = 3, message = "Name must be at least 3 characters long")
+    @Size(min = 3, max = 255, message = "Length must be in range {3,255} ")
     private String name;
     @NotBlank
-    @Size(min = 3, message = "Name must be at least 3 characters long")
+    @Size(min = 3, max = 255, message = "Length must be in range {3,255} ")
     private String surname;
     @PositiveOrZero(message = "Balance must be zero or positive")
     private double balance;

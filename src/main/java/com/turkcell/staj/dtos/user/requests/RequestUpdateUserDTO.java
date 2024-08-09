@@ -16,13 +16,9 @@ import lombok.Setter;
 
 public class RequestUpdateUserDTO {
 
-    @Min(value = 1, message = "UserId must be a positive integer greater than or equal to 1.")
-    private int userId;
-    @NotBlank
-    @Size(min = 3, message = "Name must be at least 3 characters long")
+    @Size(min = 3, max = 255, message = "Length must be in range {3,255} ")
     private String name;
-    @NotBlank
-    @Size(min = 3, message = "Name must be at least 3 characters long")
+    @Size(min = 3, max = 255, message = "Length must be in range {3,255} ")
     private String surname;
     @PositiveOrZero(message = "Balance must be zero or positive")
     private double balance;

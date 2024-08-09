@@ -2,8 +2,10 @@ package com.turkcell.staj.controllers;
 
 import com.turkcell.staj.business.abstracts.UserService;
 import com.turkcell.staj.dtos.user.requests.RequestAddUserDTO;
-import com.turkcell.staj.dtos.user.responses.GetResponseUserDTO;
+import com.turkcell.staj.dtos.user.requests.RequestUpdateUserDTO;
+import com.turkcell.staj.dtos.user.responses.ResponseGetUserDTO;
 import com.turkcell.staj.dtos.user.responses.ResponseAddUserDTO;
+import com.turkcell.staj.dtos.user.responses.ResponseUpdateUserDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -17,27 +19,22 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/v1/add")
-    public ResponseEntity<ResponseAddUserDTO> addUser(@RequestBody @Valid RequestAddUserDTO requestAddUserDTO) {
+    @PostMapping("/add")
+    public ResponseEntity<ResponseAddUserDTO> addUser(@Valid @RequestBody RequestAddUserDTO requestAddUserDTO) {
         ResponseAddUserDTO responseAddUserDTO = this.userService.addUser(requestAddUserDTO);
         return ResponseEntity.ok(responseAddUserDTO);
     }
 
-    @GetMapping("/v1/{id}")
-    public ResponseEntity<GetResponseUserDTO> getUserById(@PathVariable @Valid @Min(value = 1) int id) {
-        GetResponseUserDTO responseAddUserDTO = this.userService.getUserById(id);
-        return ResponseEntity.ok(responseAddUserDTO);
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseGetUserDTO> getUserById(@PathVariable @Valid @Min(value = 1) int id) {
+        ResponseGetUserDTO responseGetUserDTO = this.userService.getUser(id);
+        return ResponseEntity.ok(responseGetUserDTO);
     }
 
-    @PutMapping("/v1/update/{id}")
-    public ResponseEntity<ResponseAddUserDTO> updateUser(@PathVariable @Valid @Min(value = 1) int id, @RequestBody @Valid RequestAddUserDTO requestUpdateUserDTO) {
-        ResponseAddUserDTO responseAddUserDTO = this.userService.updateUser(id, requestUpdateUserDTO);
-        return ResponseEntity.ok(responseAddUserDTO);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseUpdateUserDTO> updateUser(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateUserDTO requestUpdateUserDTO) {
+        ResponseUpdateUserDTO responseUpdateUserDTO = this.userService.updateUser(id, requestUpdateUserDTO);
+        return ResponseEntity.ok(responseUpdateUserDTO);
     }
 
-    @DeleteMapping("/v1/delete/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable @Valid @Min(value = 1) int id) {
-        this.userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
 }

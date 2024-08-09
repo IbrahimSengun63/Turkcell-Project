@@ -15,8 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestUpdateTransactionDTO {
-    private int transactionId;
-    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int offerId;
     @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
     private int userId;

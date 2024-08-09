@@ -9,12 +9,17 @@ import com.turkcell.staj.dtos.user.responses.ResponseUpdateUserDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "users")
 public class UserController {
 
     private final UserService userService;
@@ -26,12 +31,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @Cacheable(key = "#id")
     public ResponseEntity<ResponseGetUserDTO> getUserById(@PathVariable @Valid @Min(value = 1) int id) {
         ResponseGetUserDTO responseGetUserDTO = userService.getUser(id);
         return ResponseEntity.ok(responseGetUserDTO);
     }
 
     @PutMapping("/update/{id}")
+    @CachePut(key = "#id")
     public ResponseEntity<ResponseUpdateUserDTO> updateUser(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateUserDTO requestUpdateUserDTO) {
         ResponseUpdateUserDTO responseUpdateUserDTO = userService.updateUser(id, requestUpdateUserDTO);
         return ResponseEntity.ok(responseUpdateUserDTO);

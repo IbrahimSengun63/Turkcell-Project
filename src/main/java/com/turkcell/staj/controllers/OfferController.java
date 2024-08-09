@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/offer")
+@RequestMapping("/api/offers")
 @RequiredArgsConstructor
 public class OfferController {
     private final OfferService offerService;
@@ -31,7 +31,7 @@ public class OfferController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateOfferDTO> updateOffer(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateOfferDTO requestUpdateOfferDTO) {
         ResponseUpdateOfferDTO response = this.offerService.updateOffer(id, requestUpdateOfferDTO);
         return ResponseEntity.ok(response);

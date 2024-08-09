@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping("/api/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
@@ -40,7 +40,7 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
         ResponseUpdateReviewDTO response = this.reviewService.updateReview(id,request);
         return ResponseEntity.ok(response);

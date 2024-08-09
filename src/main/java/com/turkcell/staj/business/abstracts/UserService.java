@@ -12,5 +12,6 @@ public interface UserService {
     ResponseUpdateUserDTO updateUser(int userId, RequestUpdateUserDTO requestUpdateUserDTO);
     ResponseGetUserDTO getUser(int userId);
     User getUserById(int userId);
+    void saveUser(User user);
 
 }

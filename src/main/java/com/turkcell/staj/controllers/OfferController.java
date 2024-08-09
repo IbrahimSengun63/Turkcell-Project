@@ -20,35 +20,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/offer")
+@RequestMapping("/api/offers")
 @RequiredArgsConstructor
 public class OfferController {
     private final OfferService offerService;
 
     @PostMapping("/add")
     public ResponseEntity<ResponseAddOfferDTO> addOffer(@Valid @RequestBody RequestAddOfferDTO requestAddOfferDTO) {
-        ResponseAddOfferDTO response = this.offerService.addOffer(requestAddOfferDTO);
+        ResponseAddOfferDTO response = offerService.addOffer(requestAddOfferDTO);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateOfferDTO> updateOffer(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateOfferDTO requestUpdateOfferDTO) {
-        ResponseUpdateOfferDTO response = this.offerService.updateOffer(id, requestUpdateOfferDTO);
+        ResponseUpdateOfferDTO response = offerService.updateOffer(id, requestUpdateOfferDTO);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteOffer(@PathVariable @Valid @Min(value = 1) int id) {
-        this.offerService.deleteOffer(id);
+        offerService.deleteOffer(id);
         return ResponseEntity.ok("Offer with ID " + id + " has been deleted successfully.");
     }
     @GetMapping
     public ResponseEntity<List<GetAllResponseOfferDTO>> getAllOffers() {
-        return ResponseEntity.ok(this.offerService.getAllOffers());
+        return ResponseEntity.ok(offerService.getAllOffers());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GetResponseOfferDTO> getOffer(@PathVariable @Valid @Min(value = 1) int id) {
-        return  ResponseEntity.ok(this.offerService.getOffer(id));
+        return  ResponseEntity.ok(offerService.getOffer(id));
     }
 }

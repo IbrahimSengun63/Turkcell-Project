@@ -15,5 +15,5 @@ public class ExceptionDetails {
     private String title;
     private String detail;
     private String status;
-    private String type;
+    private String path;
 }

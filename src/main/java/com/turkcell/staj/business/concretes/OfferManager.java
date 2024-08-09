@@ -27,41 +27,41 @@ public class OfferManager implements OfferService {
 
     @Override
     public ResponseAddOfferDTO addOffer(RequestAddOfferDTO requestAddOfferDTO) {
-        Offer offer = this.offerMapper.requestAddOfferDtoToOffer(requestAddOfferDTO);
-        Offer savedOffer = this.offerRepository.save(offer);
-        return this.offerMapper.offerToResponseAddOfferDto(savedOffer);
+        Offer offer = offerMapper.requestAddOfferDtoToOffer(requestAddOfferDTO);
+        Offer savedOffer = offerRepository.save(offer);
+        return offerMapper.offerToResponseAddOfferDto(savedOffer);
     }
 
     @Override
     public ResponseUpdateOfferDTO updateOffer(int id, RequestUpdateOfferDTO requestUpdateOfferDTO) {
-        Offer offer = this.getOfferById(id);
-        this.offerMapper.offerFromRequestUpdateOfferDto(requestUpdateOfferDTO,offer);
-        Offer updatedOffer = this.offerRepository.save(offer);
-        return this.offerMapper.offerToResponseUpdateOfferDto(updatedOffer);
+        Offer offer = getOfferById(id);
+        offerMapper.offerFromRequestUpdateOfferDto(requestUpdateOfferDTO,offer);
+        Offer updatedOffer = offerRepository.save(offer);
+        return offerMapper.offerToResponseUpdateOfferDto(updatedOffer);
     }
 
     @Override
     public void deleteOffer(int id) {
-        Offer offer = this.getOfferById(id);
+        Offer offer = getOfferById(id);
         OfferBusinessRules.checkIfOfferDeleted(offer.isStatus());
         offer.setStatus(false);
-        this.offerRepository.save(offer);
+        offerRepository.save(offer);
     }
 
     @Override
     public Offer getOfferById(int id) {
-        return this.offerRepository.findById(id).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        return offerRepository.findById(id).orElseThrow(() -> new BusinessException("Offer can't be null"));
     }
 
     @Override
     public List<GetAllResponseOfferDTO> getAllOffers() {
-        List<Offer> offers = this.offerRepository.findAll();
-        return this.offerMapper.offersToGetAllResponseOfferDto(offers);
+        List<Offer> offers = offerRepository.findAll();
+        return offerMapper.offersToGetAllResponseOfferDto(offers);
     }
 
     @Override
     public GetResponseOfferDTO getOffer(int id) {
-        Offer offer = this.offerRepository.findById(id).orElseThrow(() -> new BusinessException("Offer can't be null"));
-        return this.offerMapper.offerToGetResponseOfferDto(offer);
+        Offer offer = offerRepository.findById(id).orElseThrow(() -> new BusinessException("Offer can't be null"));
+        return offerMapper.offerToGetResponseOfferDto(offer);
     }
 }

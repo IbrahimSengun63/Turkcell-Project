@@ -14,34 +14,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/transaction")
+@RequestMapping("/api/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/add")
     public ResponseEntity<ResponseAddTransactionDTO> addTransaction(@RequestBody @Valid RequestAddTransactionDTO requestAddTransactionDTO) {
-        ResponseAddTransactionDTO responseAddTransactionDTO = this.transactionService.addTransaction(requestAddTransactionDTO);
+        ResponseAddTransactionDTO responseAddTransactionDTO = transactionService.addTransaction(requestAddTransactionDTO);
         return ResponseEntity.ok(responseAddTransactionDTO);
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateTransactionDTO> updateTransaction(@PathVariable @Valid @Min(value = 1) int id, @RequestBody @Valid RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
-        ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionService.updateTransaction(id,requestUpdateTransactionDTO);
+        ResponseUpdateTransactionDTO responseUpdateTransactionDTO = transactionService.updateTransaction(id,requestUpdateTransactionDTO);
         return ResponseEntity.ok(responseUpdateTransactionDTO);
     }
 
-    @GetMapping("/history/{id}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<GetUserTransactionsWrapper> getHistory(@PathVariable @Valid @Min(value = 1) int id){
-        GetUserTransactionsWrapper wrapper = this.transactionService.getHistory(id);
+        GetUserTransactionsWrapper wrapper = transactionService.getHistory(id);
         return ResponseEntity.ok(wrapper);
     }
 
-    @PostMapping("/{transactionId}/return")
+    @PostMapping("/{id}/return")
     public ResponseEntity<ResponseReturnTransactionDTO> returnTransaction(
             @PathVariable @Valid @Min(value = 1) int transactionId,
             @RequestParam @Valid @Min(value = 1) int userId){
-        ResponseReturnTransactionDTO transactionDTO = this.transactionService.returnTransaction(transactionId, userId);
+        ResponseReturnTransactionDTO transactionDTO = transactionService.returnTransaction(transactionId, userId);
         return ResponseEntity.ok(transactionDTO);
     }
 }

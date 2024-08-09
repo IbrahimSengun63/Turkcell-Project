@@ -13,5 +13,4 @@ public interface TransactionService {
     GetUserTransactionsWrapper getHistory(int userId);
     ResponseReturnTransactionDTO returnTransaction(int transactionId, int userId);
     boolean checkIfUserPurchasedOffer(int userId, int offerId);
-
 }

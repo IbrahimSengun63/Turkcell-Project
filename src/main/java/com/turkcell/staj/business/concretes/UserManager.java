@@ -23,28 +23,33 @@ import org.springframework.stereotype.Service;
 
         @Override
         public ResponseAddUserDTO addUser(RequestAddUserDTO requestAddUserDTO) {
-            User user = this.userMapper.requestAddUserDtoToUser(requestAddUserDTO);
-            User savedUser = this.userRepository.save(user);
-            return this.userMapper.userToResponseAddUserDto(savedUser);
+            User user = userMapper.requestAddUserDtoToUser(requestAddUserDTO);
+            User savedUser = userRepository.save(user);
+            return userMapper.userToResponseAddUserDto(savedUser);
         }
 
         @Override
         public ResponseUpdateUserDTO updateUser(int userId, RequestUpdateUserDTO requestUpdateUserDTO) {
-            User user = this.getUserById(userId);
-            this.userMapper.updateUserFromRequestUpdateUserDTO(requestUpdateUserDTO, user);
-            User updatedUser = this.userRepository.save(user);
-            return this.userMapper.userToResponseUpdateUserDto(updatedUser);
+            User user = getUserById(userId);
+            userMapper.updateUserFromRequestUpdateUserDTO(requestUpdateUserDTO, user);
+            User updatedUser = userRepository.save(user);
+            return userMapper.userToResponseUpdateUserDto(updatedUser);
         }
 
         @Override
         public ResponseGetUserDTO getUser(int userId) {
-            User user = this.getUserById(userId);
-            return this.userMapper.userToResponseGetUserDto(user);
+            User user = getUserById(userId);
+            return userMapper.userToResponseGetUserDto(user);
         }
 
         @Override
         public User getUserById(int userId) {
-            return this.userRepository.findById(userId).orElseThrow(()-> new BusinessException("User can't be null"));
+            return userRepository.findById(userId).orElseThrow(()-> new BusinessException("User can't be null"));
+        }
+
+        @Override
+        public void saveUser(User user) {
+            userRepository.save(user);
         }
 
     }

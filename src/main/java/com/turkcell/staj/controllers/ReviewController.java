@@ -17,38 +17,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/review")
+@RequestMapping("/api/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/offer/{offerId}")
     public ResponseEntity<GetOfferReviewsWrapper> getAllOfferReviews(@PathVariable @Valid @Min(value = 1) int offerId) {
-        GetOfferReviewsWrapper wrapper = this.reviewService.getAllOfferReviews(offerId);
+        GetOfferReviewsWrapper wrapper = reviewService.getAllOfferReviews(offerId);
         return ResponseEntity.ok(wrapper);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ResponseGetAllUserReviewDTO>> getAllUserReviews(@PathVariable @Valid @Min(value = 1) int userId) {
-        List<ResponseGetAllUserReviewDTO> responses = this.reviewService.getAllUserReviews(userId);
+        List<ResponseGetAllUserReviewDTO> responses = reviewService.getAllUserReviews(userId);
         return ResponseEntity.ok(responses);
     }
 
     @PostMapping("/add")
     public ResponseEntity<ResponseAddReviewDTO> addReview(@Valid @RequestBody RequestAddReviewDTO request) {
-        ResponseAddReviewDTO response = this.reviewService.addReview(request);
+        ResponseAddReviewDTO response = reviewService.addReview(request);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
-        ResponseUpdateReviewDTO response = this.reviewService.updateReview(id,request);
+        ResponseUpdateReviewDTO response = reviewService.updateReview(id,request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseGetReviewDTO> getReview(@PathVariable @Valid int id) {
-        ResponseGetReviewDTO response = this.reviewService.getReview(id);
+        ResponseGetReviewDTO response = reviewService.getReview(id);
         return ResponseEntity.ok(response);
     }
 }

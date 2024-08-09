@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     public BusinessExceptionDetails handleBusinessException(BusinessException businessException, HttpServletRequest request) {
         BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
         businessExceptionDetails.setDetail(businessException.getMessage());
-        businessExceptionDetails.setType(request.getRequestURI());
+        businessExceptionDetails.setPath(request.getRequestURI());
         return businessExceptionDetails;
     }
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
         businessExceptionDetails.setDetail(exception.getMessage());
         businessExceptionDetails.setStatus("500");
-        businessExceptionDetails.setType(request.getRequestURI());
+        businessExceptionDetails.setPath(request.getRequestURI());
         return businessExceptionDetails;
     }
 
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
         BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
         businessExceptionDetails.setDetail("Parse Error");
         businessExceptionDetails.setStatus("400");
-        businessExceptionDetails.setType(request.getRequestURI());
+        businessExceptionDetails.setPath(request.getRequestURI());
         return businessExceptionDetails;
     }
 
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
         ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails();
         // Set the message for the validation exception
         validationExceptionDetails.setDetail("VALIDATION.EXCEPTION");
-        validationExceptionDetails.setType(request.getRequestURI());
+        validationExceptionDetails.setPath(request.getRequestURI());
         // Extract field errors from the exception, convert them into a map, and store them in validationExceptionDetails
         Map<String, String> validationErrors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
         // Create and initialize ValidationExceptionDetails
         ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails();
         validationExceptionDetails.setDetail("Validation failure");
-        validationExceptionDetails.setType(request.getRequestURI());
+        validationExceptionDetails.setPath(request.getRequestURI());
 
         // Process validation errors
         Map<String, String> validationErrors = ex.getAllValidationResults().stream()
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler {
         BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
         businessExceptionDetails.setDetail("Method argument type error");
         businessExceptionDetails.setStatus("400");
-        businessExceptionDetails.setType(request.getRequestURI());
+        businessExceptionDetails.setPath(request.getRequestURI());
         return businessExceptionDetails;
     }
 

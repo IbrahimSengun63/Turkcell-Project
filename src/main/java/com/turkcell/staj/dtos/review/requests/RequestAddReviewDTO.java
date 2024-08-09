@@ -27,6 +27,5 @@ public class RequestAddReviewDTO {
     private int rating;
     @Size(min = 1, max = 255, message = "Comment length must be in the range {1,255}")
     private String comment;
-    // TODO: current date checking rule
     private LocalDate createdDate;
 }

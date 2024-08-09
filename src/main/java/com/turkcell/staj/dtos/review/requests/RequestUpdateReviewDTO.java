@@ -3,6 +3,7 @@ package com.turkcell.staj.dtos.review.requests;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class RequestUpdateReviewDTO {
     @Min(value = 1, message = "Rating must be in the range {1, 5}")
     @Max(value = 5, message = "Rating must be in the range {1, 5}")
     private int rating;
+    @Size(min = 1, max = 255, message = "Comment length must be in the range {1,255}")
     private String comment;
-    // TODO: current date checking rule
     private LocalDate createdDate;
 }

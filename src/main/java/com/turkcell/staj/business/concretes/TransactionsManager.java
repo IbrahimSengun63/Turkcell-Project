@@ -62,7 +62,7 @@ public class TransactionsManager implements TransactionService {
     }
 
     @Override
-    public ResponseUpdateTransactionDTO updateTransaction(RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
+    public ResponseUpdateTransactionDTO updateTransaction(int id, RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
         // check status
         TransactionBusinessRules.checkIfStatusCanceledOrRejected(requestUpdateTransactionDTO.getStatus());
         // get user and check if updatable user exists
@@ -70,13 +70,13 @@ public class TransactionsManager implements TransactionService {
         // check if updatable offer exists
         this.offerRepository.findById(requestUpdateTransactionDTO.getOfferId()).orElseThrow(() -> new BusinessException("Offer can't be null"));
         // get old transaction
-        Transaction transaction = this.transactionRepository.findById(requestUpdateTransactionDTO.getTransactionId()).orElseThrow(() -> new BusinessException("Transaction can't be null"));
+        Transaction transaction = this.transactionRepository.findById(id).orElseThrow(() -> new BusinessException("Transaction can't be null"));
         // update user balance only if status is completed
-        user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(transaction.getStatus(),user.getBalance(),transaction.getPrice()));
+        user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(transaction.getStatus(), user.getBalance(), transaction.getPrice()));
         // save updated user
         this.userRepository.save(user);
         // convert transaction from request
-        this.transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO,transaction);
+        this.transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO, transaction);
         // update transaction
         Transaction updatedTransaction = this.transactionRepository.save(transaction);
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
@@ -104,7 +104,7 @@ public class TransactionsManager implements TransactionService {
         // Get transaction
         Transaction transaction = this.transactionRepository.findById(transactionId).orElseThrow(() -> new BusinessException("Transaction can't be null"));
         // Checks
-        TransactionBusinessRules.checkIfTransactionBelongsToUser(transaction.getUser().getId(),userId);
+        TransactionBusinessRules.checkIfTransactionBelongsToUser(transaction.getUser().getId(), userId);
         TransactionBusinessRules.checkIfReturnStatusCompleted(transaction.getStatus());
         // Get user
         User user = this.userRepository.findById(userId).orElseThrow(() -> new BusinessException("User can't be null"));
@@ -113,7 +113,7 @@ public class TransactionsManager implements TransactionService {
                 transaction.getStatus(),
                 user.getBalance(),
                 transaction.getPrice()
-                );
+        );
         // Save new balance to db
         user.setBalance(resultBalance);
         this.userRepository.save(user);

@@ -27,8 +27,7 @@ public class TransactionController {
 
     @PostMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateTransactionDTO> updateTransaction(@PathVariable @Valid @Min(value = 1) int id, @RequestBody @Valid RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
-        requestUpdateTransactionDTO.setTransactionId(id);
-        ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionService.updateTransaction(requestUpdateTransactionDTO);
+        ResponseUpdateTransactionDTO responseUpdateTransactionDTO = this.transactionService.updateTransaction(id,requestUpdateTransactionDTO);
         return ResponseEntity.ok(responseUpdateTransactionDTO);
     }
 

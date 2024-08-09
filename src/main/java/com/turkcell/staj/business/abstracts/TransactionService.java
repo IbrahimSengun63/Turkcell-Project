@@ -9,7 +9,7 @@ import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO
 
 public interface TransactionService {
     ResponseAddTransactionDTO addTransaction(RequestAddTransactionDTO requestAddTransactionDTO);
-    ResponseUpdateTransactionDTO updateTransaction(RequestUpdateTransactionDTO requestUpdateTransactionDTO);
+    ResponseUpdateTransactionDTO updateTransaction(int id,RequestUpdateTransactionDTO requestUpdateTransactionDTO);
     GetUserTransactionsWrapper getHistory(int userId);
     ResponseReturnTransactionDTO returnTransaction(int transactionId, int userId);
     boolean checkIfUserPurchasedOffer(int userId, int offerId);

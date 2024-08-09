@@ -21,19 +21,19 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<ResponseAddUserDTO> addUser(@Valid @RequestBody RequestAddUserDTO requestAddUserDTO) {
-        ResponseAddUserDTO responseAddUserDTO = this.userService.addUser(requestAddUserDTO);
+        ResponseAddUserDTO responseAddUserDTO = userService.addUser(requestAddUserDTO);
         return ResponseEntity.ok(responseAddUserDTO);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseGetUserDTO> getUserById(@PathVariable @Valid @Min(value = 1) int id) {
-        ResponseGetUserDTO responseGetUserDTO = this.userService.getUser(id);
+        ResponseGetUserDTO responseGetUserDTO = userService.getUser(id);
         return ResponseEntity.ok(responseGetUserDTO);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ResponseUpdateUserDTO> updateUser(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateUserDTO requestUpdateUserDTO) {
-        ResponseUpdateUserDTO responseUpdateUserDTO = this.userService.updateUser(id, requestUpdateUserDTO);
+        ResponseUpdateUserDTO responseUpdateUserDTO = userService.updateUser(id, requestUpdateUserDTO);
         return ResponseEntity.ok(responseUpdateUserDTO);
     }
 

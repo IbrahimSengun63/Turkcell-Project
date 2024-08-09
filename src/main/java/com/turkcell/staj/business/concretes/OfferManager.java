@@ -31,7 +31,8 @@ public class OfferManager implements OfferService {
     public ResponseUpdateOfferDTO updateOffer(int id, RequestUpdateOfferDTO requestUpdateOfferDTO) {
         Offer offer = this.getOfferById(id);
         this.offerMapper.offerFromRequestUpdateOfferDto(requestUpdateOfferDTO,offer);
-        return this.offerMapper.offerToResponseUpdateOfferDto(offer);
+        Offer updatedOffer = this.offerRepository.save(offer);
+        return this.offerMapper.offerToResponseUpdateOfferDto(updatedOffer);
     }
 
     @Override

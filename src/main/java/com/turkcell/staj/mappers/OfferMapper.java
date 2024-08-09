@@ -17,7 +17,7 @@ public interface OfferMapper {
     @Mapping(source = "id", target = "offerId")
     ResponseAddOfferDTO offerToResponseAddOfferDto(Offer offer);
 
-    @Mapping(source = "offerId", target = "id")
+    //@Mapping(source = "offerId", target = "id")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void offerFromRequestUpdateOfferDto(RequestUpdateOfferDTO requestUpdateOfferDTO, @MappingTarget Offer offer);
 

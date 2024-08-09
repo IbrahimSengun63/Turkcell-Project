@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class RequestUpdateOfferDTO {
-    private int offerId;
     @Size(min = 1, max = 255, message = "length must be in the range {1,255}")
     private String offerName;
     @Size(min = 1, max = 255, message = "length must be in the range {1,255}")

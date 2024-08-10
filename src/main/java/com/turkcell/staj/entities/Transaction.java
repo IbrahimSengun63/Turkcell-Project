@@ -19,7 +19,7 @@ public class Transaction {
     @Column(name = "id")
     private int id;
     @Column(name = "price",updatable = false)
-    private double price;
+    private Double price;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;

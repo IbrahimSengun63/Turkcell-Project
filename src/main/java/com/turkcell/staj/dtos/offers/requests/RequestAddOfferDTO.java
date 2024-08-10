@@ -22,8 +22,9 @@ public class RequestAddOfferDTO {
     @NotNull(message = "Offer description can't be null")
     @Size(min = 3, max = 255, message = "length must be in the range {3,255}")
     private String description;
+    @NotNull(message = "Offer price can't be null")
     @PositiveOrZero(message = "Price must be a positive value.")
-    private double price;
+    private Double price;
     @NotNull(message = "Status can't be null.")
-    private boolean status;
+    private Boolean status;
 }

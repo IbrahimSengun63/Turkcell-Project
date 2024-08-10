@@ -17,7 +17,6 @@ public class RequestUpdateOfferDTO {
     @Size(min = 3, max = 255, message = "length must be in the range {3,255}")
     private String description;
     @PositiveOrZero(message = "Price must be a positive value.")
-    private double price;
-    @NotNull(message = "Status can't be null.")
-    private boolean status;
+    private Double price;
+    private Boolean status;
 }

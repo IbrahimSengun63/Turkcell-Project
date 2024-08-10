@@ -21,9 +21,9 @@ public class Offer {
     @Column(name = "description")
     private String description;
     @Column(name = "price")
-    private double price;
+    private Double price;
     @Column(name = "status")
-    private boolean status;
+    private Boolean status;
     @OneToMany(mappedBy = "offer")
     private List<Transaction> transactions;
     @OneToMany(mappedBy = "offer")

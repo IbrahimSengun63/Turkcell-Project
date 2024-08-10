@@ -43,7 +43,7 @@ public class OfferManager implements OfferService {
     @Override
     public void deleteOffer(int id) {
         Offer offer = getOfferById(id);
-        OfferBusinessRules.checkIfOfferDeleted(offer.isStatus());
+        OfferBusinessRules.checkIfOfferDeleted(offer.getStatus());
         offer.setStatus(false);
         offerRepository.save(offer);
     }

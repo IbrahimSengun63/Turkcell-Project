@@ -45,7 +45,7 @@ public class TransactionsManager implements TransactionService {
         // get offer from db
         Offer offer = offerService.getOfferById(transaction.getOffer().getId());
         // checks offer status
-        TransactionBusinessRules.checkIfOfferIsActive(offer.isStatus());
+        TransactionBusinessRules.checkIfOfferIsActive(offer.getStatus());
         // set transaction price with offer price
         transaction.setPrice(offer.getPrice());
         // get user from db

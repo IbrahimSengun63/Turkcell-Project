@@ -24,7 +24,7 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "rating")
-    private int rating;
+    private Integer rating;
     @Column(name = "comment")
     private String comment;
     @Column(name = "created_date", updatable = false)

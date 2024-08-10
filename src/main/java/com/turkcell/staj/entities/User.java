@@ -21,7 +21,7 @@ public class User {
     @Column(name = "surname")
     private String surname;
     @Column(name = "balance")
-    private double balance;
+    private Double balance;
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
     @OneToMany(mappedBy = "user")

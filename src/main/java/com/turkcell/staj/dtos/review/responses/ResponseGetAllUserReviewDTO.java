@@ -15,7 +15,7 @@ public class ResponseGetAllUserReviewDTO {
     private int reviewId;
     private int offerId;
     private int userId;
-    private int rating;
+    private Integer rating;
     private String comment;
     private LocalDate createdDate;
 }

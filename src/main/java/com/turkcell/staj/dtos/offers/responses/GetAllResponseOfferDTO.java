@@ -11,10 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class GetAllResponseOfferDTO {
-
     private int offerId;
     private String offerName;
     private String description;
-    private double price;
-    private boolean status;
+    private Double price;
+    private Boolean status;
 }

@@ -14,5 +14,5 @@ public class ResponseUpdateUserDTO {
     private int userId;
     private String name;
     private String surname;
-    private double balance;
+    private Double balance;
 }

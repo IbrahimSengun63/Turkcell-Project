@@ -22,6 +22,7 @@ public class RequestAddUserDTO {
     @NotNull(message = "user surname can't be null")
     @Size(min = 3, max = 255, message = "Length must be in range {3,255} ")
     private String surname;
+    @NotNull(message = "User balance can't be null")
     @PositiveOrZero(message = "Balance must be zero or positive")
-    private double balance;
+    private Double balance;
 }

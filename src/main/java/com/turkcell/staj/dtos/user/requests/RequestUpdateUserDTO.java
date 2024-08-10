@@ -21,5 +21,5 @@ public class RequestUpdateUserDTO {
     @Size(min = 3, max = 255, message = "Length must be in range {3,255} ")
     private String surname;
     @PositiveOrZero(message = "Balance must be zero or positive")
-    private double balance;
+    private Double balance;
 }

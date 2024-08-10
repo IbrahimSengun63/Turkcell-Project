@@ -11,9 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class ResponseAddUserDTO {
-
     private int userId;
     private String name;
     private String surname;
-    private double balance;
+    private Double balance;
 }

@@ -112,7 +112,7 @@ class ReviewManagerTest {
     }
 
     @Test
-    void shouldReturnEmptyReviewsWhenNoReviewsFound() {
+    void shouldReturnEmptyReviewsWhenNoOfferReviewsFound() {
         int offerId = 1;
         Offer offer = new Offer();
         offer.setId(offerId);
@@ -135,11 +135,88 @@ class ReviewManagerTest {
     }
 
     @Test
-    void getAllUserReviews() {
+    void shouldGetAllUserReviews() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+        Offer offer = new Offer();
+
+        List<Review> reviews = List.of(
+                new Review(1, offer, user, 5, "c", LocalDate.now()),
+                new Review(2, offer, user, 4, "s", LocalDate.now())
+        );
+
+        List<ResponseGetAllUserReviewDTO> responseList = List.of(
+                new ResponseGetAllUserReviewDTO(1, 1, 1, 5, "c", LocalDate.now()),
+                new ResponseGetAllUserReviewDTO(2, 1, 1, 5, "c", LocalDate.now())
+        );
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(reviewRepository.findByUserId(userId)).thenReturn(reviews);
+        when(reviewMapper.reviewsToResponseGetAllUserReviewsDto(reviews)).thenReturn(responseList);
+
+        //act
+        List<ResponseGetAllUserReviewDTO> result = reviewManager.getAllUserReviews(userId);
+
+        //assert
+        assertNotNull(result);
+        assertEquals(responseList, result);
+
+        //Verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(reviewRepository, times(1)).findByUserId(userId);
+        verify(reviewMapper, times(1)).reviewsToResponseGetAllUserReviewsDto(reviews);
+
     }
 
     @Test
-    void addReview() {
+    void shouldThrowExceptionWhenGettingUserReviewsWhenUserIsNull() {
+        // arrange
+        int userId = 1;
+
+        // when
+        when(userService.getUserById(userId)).thenThrow(new BusinessException("User can't be null"));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> reviewManager.getAllUserReviews(userId));
+
+        //verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(reviewRepository, never()).findByUserId(userId);
+        verify(reviewMapper, never()).reviewsToResponseGetAllUserReviewsDto(anyList());
+
+    }
+
+    @Test
+    void shouldReturnEmptyReviewsWhenNoUserReviewsFound() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        List<Review> reviews = Collections.emptyList();
+        List<ResponseGetAllUserReviewDTO> responseList = Collections.emptyList();
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(reviewRepository.findByUserId(userId)).thenReturn(reviews);
+        when(reviewMapper.reviewsToResponseGetAllUserReviewsDto(reviews)).thenReturn(responseList);
+
+        //act
+        List<ResponseGetAllUserReviewDTO> result = reviewManager.getAllUserReviews(userId);
+
+        //assert
+        assertNotNull(result);
+        assertEquals(responseList, result);
+        assertEquals(0, result.size());
+
+        //verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(reviewRepository, times(1)).findByUserId(userId);
+        verify(reviewMapper, times(1)).reviewsToResponseGetAllUserReviewsDto(reviews);
+
     }
 
     @Test

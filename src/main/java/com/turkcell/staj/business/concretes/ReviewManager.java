@@ -16,12 +16,14 @@ import com.turkcell.staj.repositories.OfferRepository;
 import com.turkcell.staj.repositories.ReviewRepository;
 import com.turkcell.staj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewManager implements ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -34,7 +36,9 @@ public class ReviewManager implements ReviewService {
     @Override
     public GetOfferReviewsWrapper getAllOfferReviews(int offerId) {
         offerService.getOfferById(offerId);
+        log.info("Retrieved offer with ID {} from the database.", offerId);
         List<Review> reviews = reviewRepository.findByOfferId(offerId);
+        log.info("Retrieved reviews with offerID {} from the database.", offerId);
         double avgRating = ReviewBusinessRules.calculateOfferAvgRating(reviews);
         List<ResponseGetAllOfferReviewDTO> responses = reviewMapper.reviewsToResponseGetAllOfferReviewsDto(reviews);
         GetOfferReviewsWrapper wrapper = new GetOfferReviewsWrapper();
@@ -45,9 +49,10 @@ public class ReviewManager implements ReviewService {
 
     @Override
     public List<ResponseGetAllUserReviewDTO> getAllUserReviews(int userId) {
-        // check user
         userService.getUserById(userId);
+        log.info("User with ID {} retrieved successfully from the database.", userId);
         List<Review> reviews = reviewRepository.findByUserId(userId);
+        log.info("Retrieved reviews with userID {} from the database.", userId);
         return reviewMapper.reviewsToResponseGetAllUserReviewsDto(reviews);
     }
 
@@ -64,7 +69,6 @@ public class ReviewManager implements ReviewService {
 
     @Override
     public ResponseUpdateReviewDTO updateReview(int id, RequestUpdateReviewDTO request) {
-        // Get review from db and make checks
         Review review = reviewRepository.findById(id).orElseThrow(() -> new BusinessException("Review can't be null"));
         userService.getUserById(request.getUserId());
         offerService.getOfferById(request.getOfferId());
@@ -72,12 +76,23 @@ public class ReviewManager implements ReviewService {
         ReviewBusinessRules.assertIfUserPurchasedOffer(result);
         reviewMapper.updateReviewFromRequestUpdateReviewDto(request, review);
         Review savedReview = reviewRepository.save(review);
+        log.info("Review with ID {} has been successfully updated and saved to the database.", savedReview.getId());
         return reviewMapper.reviewToResponseUpdateReviewDTO(savedReview);
     }
 
     @Override
     public ResponseGetReviewDTO getReview(int id) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new BusinessException("Review can't be null"));
+        Review review = getReviewById(id);
         return reviewMapper.reviewToResponseGetReviewDto(review);
+    }
+
+    @Override
+    public Review getReviewById(int id) {
+        Review review = reviewRepository.findById(id).orElseThrow(()->{
+            log.warn("Review with ID {} not found in the database.", id);
+            return new BusinessException("Review can't be null");
+        });
+        log.info("Review with ID {} successfully retrieved from the database.", id);
+        return review;
     }
 }

@@ -4,6 +4,7 @@ import com.turkcell.staj.business.abstracts.OfferService;
 import com.turkcell.staj.business.abstracts.TransactionService;
 import com.turkcell.staj.business.abstracts.UserService;
 import com.turkcell.staj.business.rules.ReviewBusinessRules;
+import com.turkcell.staj.business.rules.TransactionBusinessRules;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.core.exceptions.BusinessException;
@@ -220,14 +221,112 @@ class ReviewManagerTest {
     }
 
     @Test
-    void updateReview() {
+    void shouldAddReview() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        int offerId = 1;
+        Offer offer = new Offer();
+        offer.setId(offerId);
+
+        Review review = new Review(1, offer, user, 1, "s", LocalDate.now());
+        Review savedReview = new Review(1, offer, user, 1, "s", LocalDate.now());
+        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, 1, "s", LocalDate.now());
+        ResponseAddReviewDTO response = new ResponseAddReviewDTO(1, 1, 1, 1, "s", LocalDate.now());
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(offerService.getOfferById(offerId)).thenReturn(offer);
+        when(transactionService.checkIfUserPurchasedOffer(userId, offerId)).thenReturn(true);
+        when(reviewMapper.requestAddReviewDtoToReview(request)).thenReturn(review);
+        when(reviewRepository.save(review)).thenReturn(savedReview);
+        when(reviewMapper.reviewToResponseAddReviewDTO(savedReview)).thenReturn(response);
+
+        // act
+        ResponseAddReviewDTO result = reviewManager.addReview(request);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(response, result);
+
+        //verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(offerService, times(1)).getOfferById(offerId);
+        verify(transactionService, times(1)).checkIfUserPurchasedOffer(userId, offerId);
+        verify(reviewMapper, times(1)).requestAddReviewDtoToReview(request);
+        verify(reviewMapper, times(1)).reviewToResponseAddReviewDTO(savedReview);
     }
 
     @Test
-    void getReview() {
+    void shouldThrowExceptionWhenAddReviewAndNoUserFound() {
+        // arrange
+        int userId = 1;
+        RequestAddReviewDTO request = new RequestAddReviewDTO();
+        request.setUserId(userId);
+        // when
+        when(userService.getUserById(userId)).thenThrow(new BusinessException("User can't be null"));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> reviewManager.addReview(request));
+
+        //verify
+        verify(userService, times(1)).getUserById(userId);
     }
 
     @Test
-    void getReviewById() {
+    void shouldThrowExceptionWhenAddReviewAndNoOfferFound() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        int offerId = 1;
+
+        RequestAddReviewDTO request = new RequestAddReviewDTO();
+        request.setOfferId(offerId);
+        request.setUserId(userId);
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(offerService.getOfferById(offerId)).thenThrow(new BusinessException("Offer can't be null"));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> reviewManager.addReview(request));
+
+        // verify
+        verify(userService,times(1)).getUserById(userId);
+        verify(offerService,times(1)).getOfferById(offerId);
     }
+
+    @Test
+    void shouldThrowExceptionWhenAddReviewUserNotPurchasedOffer() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        int offerId = 1;
+        Offer offer = new Offer();
+        offer.setId(offerId);
+
+        RequestAddReviewDTO request = new RequestAddReviewDTO();
+        request.setUserId(userId);
+        request.setOfferId(offerId);
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(offerService.getOfferById(offerId)).thenReturn(offer);
+        when(transactionService.checkIfUserPurchasedOffer(userId,offerId)).thenReturn(false);
+
+        // act & assert
+        assertThrows(BusinessException.class,()-> reviewManager.addReview(request));
+
+        //verify
+        verify(userService,times(1)).getUserById(userId);
+        verify(offerService,times(1)).getOfferById(offerId);
+        verify(transactionService,times(1)).checkIfUserPurchasedOffer(userId,offerId);
+    }
+
 }

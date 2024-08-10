@@ -16,11 +16,11 @@ import lombok.Setter;
 
 public class RequestAddOfferDTO {
 
-    @NotBlank(message = "Offer name can't be blank.")
-    @Size(max = 255, message = "length must be in the range {1,255}")
+    @NotNull(message = "Offer name can't be null")
+    @Size(min = 3, max = 255, message = "length must be in the range {3,255}")
     private String offerName;
-    @NotBlank(message = "Description can't be blank.")
-    @Size(max = 255, message = "length must be in the range {1,255}")
+    @NotNull(message = "Offer description can't be null")
+    @Size(min = 3, max = 255, message = "length must be in the range {3,255}")
     private String description;
     @PositiveOrZero(message = "Price must be a positive value.")
     private double price;

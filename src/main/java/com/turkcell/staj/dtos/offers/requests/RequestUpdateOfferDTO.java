@@ -12,9 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class RequestUpdateOfferDTO {
-    @Size(min = 1, max = 255, message = "length must be in the range {1,255}")
+    @Size(min = 3, max = 255, message = "length must be in the range {3,255}")
     private String offerName;
-    @Size(min = 1, max = 255, message = "length must be in the range {1,255}")
+    @Size(min = 3, max = 255, message = "length must be in the range {3,255}")
     private String description;
     @PositiveOrZero(message = "Price must be a positive value.")
     private double price;

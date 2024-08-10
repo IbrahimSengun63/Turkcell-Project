@@ -7,10 +7,7 @@ import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
 import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
+import com.turkcell.staj.dtos.review.responses.*;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.entities.User;
@@ -482,7 +479,7 @@ class ReviewManagerTest {
         when(transactionService.checkIfUserPurchasedOffer(userId, offerId)).thenReturn(false);
 
         // act & assert
-        assertThrows(BusinessException.class, () -> reviewManager.updateReview(reviewId,request));
+        assertThrows(BusinessException.class, () -> reviewManager.updateReview(reviewId, request));
 
         //verify
         verify(reviewRepository, times(1)).findById(userId);
@@ -491,4 +488,62 @@ class ReviewManagerTest {
         verify(transactionService, times(1)).checkIfUserPurchasedOffer(userId, offerId);
     }
 
+    @Test
+    void shouldGetReview() {
+        // arrange
+        int reviewId = 1;
+        Review review = new Review();
+        review.setId(reviewId);
+
+        ResponseGetReviewDTO response = new ResponseGetReviewDTO();
+        response.setReviewId(reviewId);
+
+        // when
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+        when(reviewMapper.reviewToResponseGetReviewDto(review)).thenReturn(response);
+
+        // act
+        ResponseGetReviewDTO result = reviewManager.getReview(reviewId);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(response, result);
+
+        //verify
+        verify(reviewRepository, times(1)).findById(reviewId);
+        verify(reviewMapper, times(1)).reviewToResponseGetReviewDto(review);
+
+    }
+
+    @Test
+    void shouldFailToRetrieveReviewAndThrowExceptionWhenReviewDoesNotExist() {
+        // arrange
+        int reviewId = 1;
+        Review review = new Review();
+        review.setId(reviewId);
+
+        // when
+        when(reviewRepository.findById(reviewId)).thenThrow(new BusinessException("Review can't be null"));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> reviewManager.getReview(reviewId));
+
+        //verify
+        verify(reviewRepository, times(1)).findById(reviewId);
+    }
+
+    @Test
+    void shouldFailToGetReviewByIdWhenReviewDoesNotExist() {
+        // arrange
+        int reviewId = 1;
+
+        // when
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.empty());
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> reviewManager.getReviewById(reviewId));
+
+        // verify
+        verify(reviewRepository, times(1)).findById(reviewId);
+    }
 }

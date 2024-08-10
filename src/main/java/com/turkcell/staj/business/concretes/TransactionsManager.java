@@ -91,7 +91,7 @@ public class TransactionsManager implements TransactionService {
         // check user
         userService.getUserById(userId);
         // get all transaction belong to user and status is completed
-        List<Transaction> transactions = transactionRepository.findByUserIdAndStatus(userId, Status.COMPLETED);
+        List<Transaction> transactions = transactionRepository.findByUserId(userId);
         // calculate total purchase history
         double total = TransactionBusinessRules.calculateUserTotalPurchase(transactions);
         List<ResponseGetAllUserTransactionDTO> response = transactionMapper.transactionListToResponseDtoList(transactions);

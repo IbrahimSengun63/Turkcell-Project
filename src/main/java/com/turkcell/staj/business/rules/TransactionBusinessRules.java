@@ -45,8 +45,9 @@ public final class TransactionBusinessRules {
         return status.equals(Status.COMPLETED) ? userBalance + price : userBalance;
     }
 
-    public static double calculateUserTotalPurchase(List<Transaction> transactionList){
+    public static double calculateUserTotalPurchase(List<Transaction> transactionList) {
         return transactionList.stream()
+                .filter(transaction -> transaction.getStatus() == Status.COMPLETED)
                 .mapToDouble(Transaction::getPrice)
                 .sum();
     }

@@ -6,6 +6,7 @@ import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseReturnTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
+import com.turkcell.staj.entities.Transaction;
 
 public interface TransactionService {
     ResponseAddTransactionDTO addTransaction(RequestAddTransactionDTO requestAddTransactionDTO);
@@ -13,4 +14,5 @@ public interface TransactionService {
     GetUserTransactionsWrapper getHistory(int userId);
     ResponseReturnTransactionDTO returnTransaction(int transactionId, int userId);
     boolean checkIfUserPurchasedOffer(int userId, int offerId);
+    Transaction getTransactionById(int id);
 }

@@ -18,16 +18,16 @@ import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
 import com.turkcell.staj.entities.User;
 import com.turkcell.staj.mappers.TransactionMapper;
-import com.turkcell.staj.repositories.OfferRepository;
 import com.turkcell.staj.repositories.TransactionRepository;
-import com.turkcell.staj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionsManager implements TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -45,7 +45,7 @@ public class TransactionsManager implements TransactionService {
         // get offer from db
         Offer offer = offerService.getOfferById(transaction.getOffer().getId());
         // checks offer status
-        TransactionBusinessRules.checkIfOfferIsActive(offer.getStatus());
+        TransactionBusinessRules.checkIfOfferIsPurchasable(offer.getStatus());
         // set transaction price with offer price
         transaction.setPrice(offer.getPrice());
         // get user from db
@@ -58,6 +58,7 @@ public class TransactionsManager implements TransactionService {
         userService.saveUser(user);
         // add transaction
         Transaction savedTransaction = transactionRepository.save(transaction);
+        log.info("Transaction with ID {} has been successfully saved to the database.", savedTransaction.getId());
         ResponseAddTransactionDTO responseAddTransactionDTO = transactionMapper.transactionToResponseAddTransactionDto(savedTransaction);
         responseAddTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
         return responseAddTransactionDTO;
@@ -72,7 +73,7 @@ public class TransactionsManager implements TransactionService {
         // check if updatable offer exists
         offerService.getOfferById(requestUpdateTransactionDTO.getOfferId());
         // get old transaction
-        Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new BusinessException("Transaction can't be null"));
+        Transaction transaction = getTransactionById(id);
         // update user balance only if status is completed
         user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(transaction.getStatus(), user.getBalance(), transaction.getPrice()));
         // save updated user
@@ -81,6 +82,7 @@ public class TransactionsManager implements TransactionService {
         transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO, transaction);
         // update transaction
         Transaction updatedTransaction = transactionRepository.save(transaction);
+        log.info("Transaction with ID {} has been successfully updated and saved to the database.", updatedTransaction.getId());
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
         responseUpdateTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
         return responseUpdateTransactionDTO;
@@ -91,6 +93,7 @@ public class TransactionsManager implements TransactionService {
         // check user
         userService.getUserById(userId);
         // get all transaction belong to user and status is completed
+        log.info("Retrieved transactions with userID {} from the database.", userId);
         List<Transaction> transactions = transactionRepository.findByUserId(userId);
         // calculate total purchase history
         double total = TransactionBusinessRules.calculateUserTotalPurchase(transactions);
@@ -104,7 +107,7 @@ public class TransactionsManager implements TransactionService {
     @Override
     public ResponseReturnTransactionDTO returnTransaction(int transactionId, int userId) {
         // Get transaction
-        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow(() -> new BusinessException("Transaction can't be null"));
+        Transaction transaction = getTransactionById(transactionId);
         // Checks
         TransactionBusinessRules.checkIfTransactionBelongsToUser(transaction.getUser().getId(), userId);
         TransactionBusinessRules.checkIfReturnStatusCompleted(transaction.getStatus());
@@ -122,6 +125,7 @@ public class TransactionsManager implements TransactionService {
         // Mark transaction as returned
         transaction.setStatus(Status.RETURNED);
         Transaction updatedTransaction = transactionRepository.save(transaction);
+        log.info("Transaction with ID {} has been successfully updated and saved to the database.", updatedTransaction.getId());
         ResponseReturnTransactionDTO responseReturnTransactionDTO = transactionMapper.transactionToResponseReturnTransactionDto(updatedTransaction);
         responseReturnTransactionDTO.setUserBalanceAfterTransaction(resultBalance);
         return responseReturnTransactionDTO;
@@ -130,6 +134,17 @@ public class TransactionsManager implements TransactionService {
     @Override
     public boolean checkIfUserPurchasedOffer(int userId, int offerId) {
         return transactionRepository.existsByUserIdAndOfferId(userId, offerId);
+    }
+
+    @Override
+    public Transaction getTransactionById(int id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Transaction with ID {} successfully retrieved from the database.", id);
+                    return new BusinessException("Transaction can't be null");
+                });
+        log.info("Transaction with ID {} successfully retrieved from the database.", id);
+        return transaction;
     }
 
 }

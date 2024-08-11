@@ -1,10 +1,10 @@
 package com.turkcell.staj.controllers;
 
 import com.turkcell.staj.business.abstracts.OfferService;
-import com.turkcell.staj.dtos.offers.responses.GetAllResponseOfferDTO;
-import com.turkcell.staj.dtos.offers.responses.GetResponseOfferDTO;
 import com.turkcell.staj.dtos.offers.requests.RequestAddOfferDTO;
 import com.turkcell.staj.dtos.offers.requests.RequestUpdateOfferDTO;
+import com.turkcell.staj.dtos.offers.responses.GetAllResponseOfferDTO;
+import com.turkcell.staj.dtos.offers.responses.GetResponseOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseAddOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseUpdateOfferDTO;
 import jakarta.validation.Valid;
@@ -15,10 +15,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

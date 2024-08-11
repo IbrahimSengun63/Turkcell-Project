@@ -71,7 +71,7 @@ public class OfferManager implements OfferService {
 
     @Override
     public GetResponseOfferDTO getOffer(int id) {
-        Offer offer = this.getOfferById(id);
+        Offer offer = getOfferById(id);
         return offerMapper.offerToGetResponseOfferDto(offer);
     }
 }

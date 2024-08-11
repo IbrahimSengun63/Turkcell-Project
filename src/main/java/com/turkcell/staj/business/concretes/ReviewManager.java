@@ -69,10 +69,6 @@ public class ReviewManager implements ReviewService {
     @Override
     public ResponseUpdateReviewDTO updateReview(int id, RequestUpdateReviewDTO request) {
         Review review = getReviewById(id);
-        userService.getUserById(request.getUserId());
-        offerService.getOfferById(request.getOfferId());
-        boolean result = transactionService.checkIfUserPurchasedOffer(request.getUserId(), request.getOfferId());
-        ReviewBusinessRules.assertIfUserPurchasedOffer(result);
         reviewMapper.updateReviewFromRequestUpdateReviewDto(request, review);
         Review updatedReview = reviewRepository.save(review);
         log.info("Review with ID {} has been successfully updated and saved to the database.", updatedReview.getId());

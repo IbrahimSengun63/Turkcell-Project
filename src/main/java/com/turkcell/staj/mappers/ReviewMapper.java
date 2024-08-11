@@ -41,9 +41,6 @@ public interface ReviewMapper {
     @Mapping(source = "user.id", target = "userId")
     ResponseUpdateReviewDTO reviewToResponseUpdateReviewDTO(Review review);
 
-
-    @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "offerId", target = "offer.id")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateReviewFromRequestUpdateReviewDto(RequestUpdateReviewDTO requestUpdateReviewDTO, @MappingTarget Review review);
 

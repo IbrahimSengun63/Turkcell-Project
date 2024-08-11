@@ -65,6 +65,7 @@ public class TransactionsManager implements TransactionService {
         log.info("Transaction with ID {} has been successfully saved to the database.", savedTransaction.getId());
         ResponseAddTransactionDTO responseAddTransactionDTO = transactionMapper.transactionToResponseAddTransactionDto(savedTransaction);
         responseAddTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
+        responseAddTransactionDTO.setOfferPrice(offer.getPrice());
         return responseAddTransactionDTO;
     }
 

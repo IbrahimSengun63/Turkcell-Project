@@ -28,4 +28,6 @@ public class Offer {
     private List<Transaction> transactions;
     @OneToMany(mappedBy = "offer")
     private List<Review> reviews;
+    @OneToOne(mappedBy = "offer")
+    private Discount discount;
 }

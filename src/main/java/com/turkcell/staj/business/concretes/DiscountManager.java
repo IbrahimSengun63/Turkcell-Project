@@ -37,8 +37,8 @@ public class DiscountManager implements DiscountService {
     @Override
     public ResponseUpdateDiscountDTO updateDiscount(int id, RequestUpdateDiscountDTO requestUpdateDiscountDTO) {
         Discount discount = getDiscountById(id);
-        offerService.getOfferById(requestUpdateDiscountDTO.getOfferId());
         discountMapper.updateDiscountFromRequestUpdateDiscountDto(requestUpdateDiscountDTO, discount);
+        offerService.getOfferById(discount.getOffer().getId());
         Discount updatedDiscount = discountRepository.save(discount);
         log.info("Discount with ID {} has been successfully updated to the database.", updatedDiscount.getId());
         return discountMapper.discountToResponseUpdateDiscountDto(updatedDiscount);

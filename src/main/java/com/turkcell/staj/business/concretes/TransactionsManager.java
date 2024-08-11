@@ -72,23 +72,22 @@ public class TransactionsManager implements TransactionService {
     public ResponseUpdateTransactionDTO updateTransaction(int id, RequestUpdateTransactionDTO requestUpdateTransactionDTO) {
         // check status
         TransactionBusinessRules.checkIfStatusCanceledOrRejected(requestUpdateTransactionDTO.getStatus());
-        // get user and check if updatable user exists
-        User user = userService.getUserById(requestUpdateTransactionDTO.getUserId());
-        // check if updatable offer exists
-        offerService.getOfferById(requestUpdateTransactionDTO.getOfferId());
         // get old transaction
         Transaction transaction = getTransactionById(id);
         // update user balance only if status is completed
-        user.setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(transaction.getStatus(), user.getBalance(), transaction.getPrice()));
+        transaction.getUser().setBalance(TransactionBusinessRules.updateBalanceIfTransactionStatusChangedFromCompleted(
+                transaction.getStatus(),
+                transaction.getUser().getBalance(),
+                transaction.getPrice()));
         // save updated user
-        userService.saveUser(user);
+        userService.saveUser(transaction.getUser());
         // convert transaction from request
         transactionMapper.updateTransactionFromRequestUpdateTransactionDTO(requestUpdateTransactionDTO, transaction);
         // update transaction
         Transaction updatedTransaction = transactionRepository.save(transaction);
         log.info("Transaction with ID {} has been successfully updated and saved to the database.", updatedTransaction.getId());
         ResponseUpdateTransactionDTO responseUpdateTransactionDTO = transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction);
-        responseUpdateTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
+        responseUpdateTransactionDTO.setUserBalanceAfterTransaction(updatedTransaction.getUser().getBalance());
         return responseUpdateTransactionDTO;
     }
 

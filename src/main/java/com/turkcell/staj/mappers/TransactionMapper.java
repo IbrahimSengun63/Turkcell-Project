@@ -24,10 +24,7 @@ public interface TransactionMapper {
     @Mapping(source = "offer.id", target = "offerId")
     @Mapping(source = "transaction.id", target = "transactionId")
     ResponseAddTransactionDTO transactionToResponseAddTransactionDto(Transaction transaction);
-
-    @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "offerId", target = "offer.id")
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    
     void updateTransactionFromRequestUpdateTransactionDTO(RequestUpdateTransactionDTO requestUpdateTransactionDTO, @MappingTarget Transaction transaction);
 
     @Mapping(source = "user.id", target = "userId")

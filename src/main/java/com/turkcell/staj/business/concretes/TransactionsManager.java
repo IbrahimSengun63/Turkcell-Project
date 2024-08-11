@@ -1,5 +1,6 @@
 package com.turkcell.staj.business.concretes;
 
+import com.turkcell.staj.business.abstracts.DiscountService;
 import com.turkcell.staj.business.abstracts.OfferService;
 import com.turkcell.staj.business.abstracts.TransactionService;
 import com.turkcell.staj.business.abstracts.UserService;
@@ -34,6 +35,7 @@ public class TransactionsManager implements TransactionService {
     private final TransactionMapper transactionMapper;
     private final UserService userService;
     private final OfferService offerService;
+    private final DiscountService discountService;
 
     @Override
     public ResponseAddTransactionDTO addTransaction(RequestAddTransactionDTO requestAddTransactionDTO) {
@@ -46,8 +48,10 @@ public class TransactionsManager implements TransactionService {
         Offer offer = offerService.getOfferById(transaction.getOffer().getId());
         // checks offer status
         TransactionBusinessRules.checkIfOfferIsPurchasable(offer.getStatus());
+        // get offer discount amount
+        double discountAmount = discountService.getOfferDiscountAmount(offer);
         // set transaction price with offer price
-        transaction.setPrice(offer.getPrice());
+        transaction.setPrice(offer.getPrice() - discountAmount);
         // get user from db
         User user = userService.getUserById(transaction.getUser().getId());
         // check user balance

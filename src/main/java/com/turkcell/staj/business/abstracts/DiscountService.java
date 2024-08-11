@@ -7,6 +7,7 @@ import com.turkcell.staj.dtos.discounts.responses.ResponseGetDiscountDTO;
 import com.turkcell.staj.dtos.discounts.responses.ResponseGetOfferDiscountDTO;
 import com.turkcell.staj.dtos.discounts.responses.ResponseUpdateDiscountDTO;
 import com.turkcell.staj.entities.Discount;
+import com.turkcell.staj.entities.Offer;
 
 public interface DiscountService {
     ResponseAddDiscountDTO addDiscount(RequestAddDiscountDTO requestAddDiscountDTO);
@@ -15,4 +16,6 @@ public interface DiscountService {
     ResponseGetOfferDiscountDTO getOfferDiscount(int offerId);
     Discount getDiscountById(int id);
     Discount getDiscountByOfferId(int offerId);
+    boolean checkIfOfferDiscountExists(int offerId);
+    double getOfferDiscountAmount(Offer offer);
 }

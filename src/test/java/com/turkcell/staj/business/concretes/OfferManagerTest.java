@@ -8,6 +8,7 @@ import com.turkcell.staj.dtos.offers.responses.GetAllResponseOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.GetResponseOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseAddOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseUpdateOfferDTO;
+import com.turkcell.staj.entities.Discount;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.entities.Transaction;
@@ -45,7 +46,7 @@ class OfferManagerTest {
     public void shouldAddOffer() {
         // Do
         RequestAddOfferDTO request = new RequestAddOfferDTO("offername1", "desc1", 35D, true);
-        Offer offer = new Offer(1,"offername1","desc1",35D, true, new ArrayList<>(), new ArrayList<>());
+        Offer offer = new Offer(1,"offername1","desc1",35D, true, new ArrayList<>(), new ArrayList<>(), new Discount());
         ResponseAddOfferDTO response = new ResponseAddOfferDTO(1, "offername1", "desc1", 35D, true);
 
         // When
@@ -75,8 +76,8 @@ class OfferManagerTest {
     public void shouldUpdateOffer() {
         // Do
         int id = 1;
-        Offer offer = new Offer(id,"offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>());
-        Offer updatedOffer = new Offer(id,"offernameupdated","descupdated",45.65, true, new ArrayList<>(), new ArrayList<>());
+        Offer offer = new Offer(id,"offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>(), new Discount());
+        Offer updatedOffer = new Offer(id,"offernameupdated","descupdated",45.65, true, new ArrayList<>(), new ArrayList<>(), new Discount());
         RequestUpdateOfferDTO request = new RequestUpdateOfferDTO("offernameupdated","descupdated",45D, true);
         ResponseUpdateOfferDTO response = new ResponseUpdateOfferDTO(1, "offernameupdated","descupdated",45D, true);
         // When
@@ -116,7 +117,7 @@ class OfferManagerTest {
     public void shouldDeleteOffer() {
         // Do
         int id = 3;
-        Offer offer = new Offer(id,"offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>());
+        Offer offer = new Offer(id,"offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>(), new Discount());
 
         // When
         when(offerRepository.findById(id)).thenReturn(Optional.of(offer));
@@ -132,7 +133,7 @@ class OfferManagerTest {
     public void shouldGetOffer(){
         // Do
         int id = 3;
-        Offer offer = new Offer(id,"offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>());
+        Offer offer = new Offer(id,"offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>(), new Discount());
         GetResponseOfferDTO response = new GetResponseOfferDTO(id, "offername1","desc1",35.23, true);
         // When
         when(offerRepository.findById(id)).thenReturn(Optional.of(offer));
@@ -155,8 +156,8 @@ class OfferManagerTest {
                 new GetAllResponseOfferDTO(2, "offername2","desc2",55.62, false)
         );
         List<Offer> offers = List.of(
-                new Offer(1, "offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>()),
-                new Offer(2, "offername2","desc2",55.62, false, new ArrayList<>(), new ArrayList<>())
+                new Offer(1, "offername1","desc1",35.23, true, new ArrayList<>(), new ArrayList<>(), new Discount()),
+                new Offer(2, "offername2","desc2",55.62, false, new ArrayList<>(), new ArrayList<>(), new Discount())
         );
 
         // When

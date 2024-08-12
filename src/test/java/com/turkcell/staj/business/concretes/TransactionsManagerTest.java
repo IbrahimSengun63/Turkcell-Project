@@ -7,7 +7,9 @@ import com.turkcell.staj.business.rules.TransactionBusinessRules;
 import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
+import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
 import com.turkcell.staj.entities.User;
@@ -22,6 +24,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -45,7 +48,6 @@ class TransactionsManagerTest {
 
     @Mock
     private TransactionMapper transactionMapper;
-
 
 
     @BeforeEach
@@ -279,7 +281,6 @@ class TransactionsManagerTest {
         request.setStatus(status);
 
 
-
         // when
         when(transactionMapper.requestAddTransactionDtoToTransaction(request)).thenReturn(transaction);
         when(offerService.getOfferById(offerId)).thenReturn(offer);
@@ -329,7 +330,6 @@ class TransactionsManagerTest {
         request.setStatus(status);
 
 
-
         // when
         when(transactionMapper.requestAddTransactionDtoToTransaction(request)).thenReturn(transaction);
         when(offerService.getOfferById(offerId)).thenReturn(offer);
@@ -347,13 +347,145 @@ class TransactionsManagerTest {
         verify(transactionRepository, never()).save(any());
     }
 
+    @Test
+    void shouldUpdateTransaction() {
+        // arrange
+        int userId = 1;
+        double userBalance = 8.0;
+        User user = new User();
+        user.setId(userId);
+        user.setBalance(userBalance);
+
+        int transactionId = 1;
+        Status status = Status.CANCELED;
+        double price = 22.0;
+        Transaction transaction = new Transaction();
+        transaction.setId(transactionId);
+        transaction.setStatus(status);
+        transaction.setPrice(price);
+        transaction.setUser(user);
+
+        Transaction updatedTransaction = new Transaction();
+        updatedTransaction.setId(transactionId);
+        updatedTransaction.setUser(user);
+        updatedTransaction.setStatus(Status.CANCELED);
+        updatedTransaction.setPrice(price);
 
 
+        RequestUpdateTransactionDTO request = new RequestUpdateTransactionDTO(status);
+        request.setStatus(Status.CANCELED);
+        ResponseUpdateTransactionDTO response = new ResponseUpdateTransactionDTO();
+        response.setTransactionId(transactionId);
+        response.setStatus(status);
+        response.setUserId(userId);
+        response.setPrice(price);
+
+        // when
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
+        doNothing().when(userService).saveUser(user);
+        doNothing().when(transactionMapper).updateTransactionFromRequestUpdateTransactionDTO(request, transaction);
+        when(transactionRepository.save(transaction)).thenReturn(updatedTransaction);
+        when(transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction)).thenReturn(response);
+
+        // act
+        ResponseUpdateTransactionDTO result = transactionsManager.updateTransaction(transactionId, request);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(userBalance, result.getUserBalanceAfterTransaction());
+
+        // verify
+        verify(transactionRepository, times(1)).findById(transactionId);
+        verify(userService, times(1)).saveUser(user);
+        verify(transactionMapper, times(1)).updateTransactionFromRequestUpdateTransactionDTO(request, transaction);
+        verify(transactionRepository, times(1)).save(transaction);
+        verify(transactionMapper, times(1)).transactionToResponseUpdateTransactionDto(updatedTransaction);
+
+    }
+
+    @Test
+    void shouldUpdateTransactionAndUpdateBalanceIfTransactionStatusChangedFromCompleted() {
+        // arrange
+        int userId = 1;
+        double userBalance = 8.0;
+        User user = new User();
+        user.setId(userId);
+        user.setBalance(userBalance);
+
+        int transactionId = 1;
+        Status status = Status.COMPLETED;
+        double price = 22.0;
+        Transaction transaction = new Transaction();
+        transaction.setId(transactionId);
+        transaction.setStatus(status);
+        transaction.setPrice(price);
+        transaction.setUser(user);
+
+        Transaction updatedTransaction = new Transaction();
+        updatedTransaction.setId(transactionId);
+        updatedTransaction.setUser(user);
+        updatedTransaction.setStatus(Status.CANCELED);
+        updatedTransaction.setPrice(price);
 
 
+        RequestUpdateTransactionDTO request = new RequestUpdateTransactionDTO(status);
+        request.setStatus(Status.CANCELED);
+        ResponseUpdateTransactionDTO response = new ResponseUpdateTransactionDTO();
+        response.setTransactionId(transactionId);
+        response.setStatus(status);
+        response.setUserId(userId);
+        response.setPrice(price);
 
+        // when
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
+        doNothing().when(userService).saveUser(user);
+        doNothing().when(transactionMapper).updateTransactionFromRequestUpdateTransactionDTO(request, transaction);
+        when(transactionRepository.save(transaction)).thenReturn(updatedTransaction);
+        when(transactionMapper.transactionToResponseUpdateTransactionDto(updatedTransaction)).thenReturn(response);
 
+        // act
+        ResponseUpdateTransactionDTO result = transactionsManager.updateTransaction(transactionId, request);
 
+        // assert
+        assertNotNull(result);
+        assertEquals(userBalance + price, result.getUserBalanceAfterTransaction());
+
+        // verify
+        verify(transactionRepository, times(1)).findById(transactionId);
+        verify(userService, times(1)).saveUser(user);
+        verify(transactionMapper, times(1)).updateTransactionFromRequestUpdateTransactionDTO(request, transaction);
+        verify(transactionRepository, times(1)).save(transaction);
+        verify(transactionMapper, times(1)).transactionToResponseUpdateTransactionDto(updatedTransaction);
+
+    }
+
+    @Test
+    void shouldFailToUpdateTransactionWhenStatusIsCompleted() {
+        // arrange
+        int transactionId = 1;
+
+        RequestUpdateTransactionDTO request = new RequestUpdateTransactionDTO(Status.COMPLETED);
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.updateTransaction(transactionId, request));
+
+        verify(transactionRepository, never()).findById(transactionId);
+    }
+
+    @Test
+    void shouldFailToUpdateTransactionWhenTransactionIsNull() {
+        // arrange
+        int transactionId = 1;
+
+        RequestUpdateTransactionDTO request = new RequestUpdateTransactionDTO(Status.CANCELED);
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.updateTransaction(transactionId, request));
+
+        //verify
+        verify(transactionRepository,times(1)).findById(transactionId);
+        verify(userService,never()).saveUser(any());
+    }
 
 
 }

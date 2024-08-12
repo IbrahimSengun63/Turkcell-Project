@@ -1,12 +1,12 @@
 package com.turkcell.staj.dtos.transaction.requests;
 
 import com.turkcell.staj.core.enums.Status;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 import java.time.LocalDate;
 @Getter

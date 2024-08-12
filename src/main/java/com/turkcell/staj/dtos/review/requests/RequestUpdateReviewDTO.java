@@ -16,14 +16,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestUpdateReviewDTO {
-    @NotNull(message = "Offer can't be null")
-    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
-    private int offerId;
-    @NotNull(message = "User can't be null")
-    @Min(value = 1, message = "Id must be a positive integer greater than or equal to 1")
-    private int userId;
-    @Min(value = 1, message = "Rating must be in the range {1, 5}")
-    @Max(value = 5, message = "Rating must be in the range {1, 5}")
     private Integer rating;
     @Size(min = 3, max = 255, message = "Comment length must be in the range {3,255}")
     private String comment;

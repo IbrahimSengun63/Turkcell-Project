@@ -1,6 +1,5 @@
 package com.turkcell.staj.repositories;
 
-import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.entities.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 

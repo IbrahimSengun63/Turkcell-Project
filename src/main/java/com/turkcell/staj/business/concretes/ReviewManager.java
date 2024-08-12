@@ -12,9 +12,7 @@ import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.*;
 import com.turkcell.staj.entities.Review;
 import com.turkcell.staj.mappers.ReviewMapper;
-import com.turkcell.staj.repositories.OfferRepository;
 import com.turkcell.staj.repositories.ReviewRepository;
-import com.turkcell.staj.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,20 +62,17 @@ public class ReviewManager implements ReviewService {
         ReviewBusinessRules.assertIfUserPurchasedOffer(result);
         Review review = reviewMapper.requestAddReviewDtoToReview(request);
         Review savedReview = reviewRepository.save(review);
+        log.info("Review with ID {} has been successfully saved to the database.", savedReview.getId());
         return reviewMapper.reviewToResponseAddReviewDTO(savedReview);
     }
 
     @Override
     public ResponseUpdateReviewDTO updateReview(int id, RequestUpdateReviewDTO request) {
-        Review review = reviewRepository.findById(id).orElseThrow(() -> new BusinessException("Review can't be null"));
-        userService.getUserById(request.getUserId());
-        offerService.getOfferById(request.getOfferId());
-        boolean result = transactionService.checkIfUserPurchasedOffer(request.getUserId(), request.getOfferId());
-        ReviewBusinessRules.assertIfUserPurchasedOffer(result);
+        Review review = getReviewById(id);
         reviewMapper.updateReviewFromRequestUpdateReviewDto(request, review);
-        Review savedReview = reviewRepository.save(review);
-        log.info("Review with ID {} has been successfully updated and saved to the database.", savedReview.getId());
-        return reviewMapper.reviewToResponseUpdateReviewDTO(savedReview);
+        Review updatedReview = reviewRepository.save(review);
+        log.info("Review with ID {} has been successfully updated and saved to the database.", updatedReview.getId());
+        return reviewMapper.reviewToResponseUpdateReviewDTO(updatedReview);
     }
 
     @Override

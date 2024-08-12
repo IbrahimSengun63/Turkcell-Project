@@ -1,6 +1,7 @@
 package com.turkcell.staj.dtos.offers.requests;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

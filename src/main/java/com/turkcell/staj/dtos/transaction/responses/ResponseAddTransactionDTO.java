@@ -16,6 +16,7 @@ public class ResponseAddTransactionDTO {
     private int transactionId;
     private int offerId;
     private int userId;
+    private Double offerPrice;
     private Double price;
     private Status status;
     private LocalDate createdDate;

@@ -1,6 +1,7 @@
 package com.turkcell.staj.core.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -11,10 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-
 import java.util.Map;
 import java.util.NoSuchElementException;
-
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -95,6 +94,16 @@ public class GlobalExceptionHandler {
         BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
         businessExceptionDetails.setDetail("Method argument type error");
         businessExceptionDetails.setStatus("400");
+        businessExceptionDetails.setPath(request.getRequestURI());
+        return businessExceptionDetails;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public BusinessExceptionDetails handleDataIntegrityViolationException(HttpServletRequest request) {
+        BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
+        businessExceptionDetails.setDetail("An internal error occurred. Please try again later.");
+        businessExceptionDetails.setStatus("500");
         businessExceptionDetails.setPath(request.getRequestURI());
         return businessExceptionDetails;
     }

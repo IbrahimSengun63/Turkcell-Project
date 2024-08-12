@@ -5,14 +5,13 @@ import com.turkcell.staj.business.rules.OfferBusinessRules;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.offers.requests.RequestAddOfferDTO;
 import com.turkcell.staj.dtos.offers.requests.RequestUpdateOfferDTO;
+import com.turkcell.staj.dtos.offers.responses.GetAllResponseOfferDTO;
+import com.turkcell.staj.dtos.offers.responses.GetResponseOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseAddOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.ResponseUpdateOfferDTO;
 import com.turkcell.staj.entities.Offer;
-import com.turkcell.staj.dtos.offers.responses.GetAllResponseOfferDTO;
-import com.turkcell.staj.dtos.offers.responses.GetResponseOfferDTO;
 import com.turkcell.staj.mappers.OfferMapper;
 import com.turkcell.staj.repositories.OfferRepository;
-import com.turkcell.staj.entities.Offer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,7 @@ public class OfferManager implements OfferService {
 
     @Override
     public GetResponseOfferDTO getOffer(int id) {
-        Offer offer = this.getOfferById(id);
+        Offer offer = getOfferById(id);
         return offerMapper.offerToGetResponseOfferDto(offer);
     }
 }

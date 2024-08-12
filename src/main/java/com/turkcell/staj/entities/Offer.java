@@ -1,7 +1,10 @@
 package com.turkcell.staj.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -28,4 +31,6 @@ public class Offer {
     private List<Transaction> transactions;
     @OneToMany(mappedBy = "offer")
     private List<Review> reviews;
+    @OneToOne(mappedBy = "offer")
+    private Discount discount;
 }

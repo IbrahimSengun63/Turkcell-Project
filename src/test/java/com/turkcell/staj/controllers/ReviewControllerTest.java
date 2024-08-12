@@ -1,44 +1,34 @@
 package com.turkcell.staj.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hazelcast.core.HazelcastInstance;
 import com.turkcell.staj.business.abstracts.ReviewService;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
-import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
+import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
 import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
+import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class ReviewControllerTest {
 
     @Mock
     private ReviewService reviewService;
-
-    @Mock
-    private HazelcastInstance hazelcastInstance;
-
 
     @InjectMocks
     private ReviewController reviewController;
@@ -82,10 +72,10 @@ class ReviewControllerTest {
     }
 
     @Test
-    void shouldGetAllOfferReviewsWhenFailToFindOfferReviews() throws Exception {
+    void shouldReturnEmptyListWhenFailToFindOfferReviews() throws Exception {
         // Arrange
         int offerId = 1;
-        GetOfferReviewsWrapper response = new GetOfferReviewsWrapper(List.of(),2);
+        GetOfferReviewsWrapper response = new GetOfferReviewsWrapper(List.of(),0);
 
         // when
         when(reviewService.getAllOfferReviews(offerId)).thenReturn(response);
@@ -168,7 +158,7 @@ class ReviewControllerTest {
     }
 
     @Test
-    void shouldAddReviewSuccessfully() throws Exception {
+    void shouldAddReview() throws Exception {
         // Arrange
         RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, 5, "Valid comment", null);
         ResponseAddReviewDTO response = new ResponseAddReviewDTO(1, 1, 1, 5, "Valid comment", null);
@@ -177,7 +167,7 @@ class ReviewControllerTest {
         when(reviewService.addReview(any(RequestAddReviewDTO.class))).thenReturn(response);
 
         // Act
-        MvcResult result = mockMvc.perform(post("/api/reviews/add")
+        mockMvc.perform(post("/api/reviews/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -189,11 +179,81 @@ class ReviewControllerTest {
                 .andExpect(jsonPath("$.createdDate").doesNotExist())
                 .andReturn();
 
-        System.out.println(result.getResponse().getContentAsString());
 
         // Verify that the service method was called once with any RequestAddReviewDTO object
         verify(reviewService, times(1)).addReview(any(RequestAddReviewDTO.class));
     }
+
+    @Test
+    void shouldReturnBadRequestWhenAddReviewValidationsFailed() throws Exception {
+        // Arrange
+        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, -5, "c", null);
+        ResponseAddReviewDTO response = new ResponseAddReviewDTO(1, 1, 1, -5, "c", null);
+
+        // Use ArgumentMatchers.any() to match any RequestAddReviewDTO object
+        when(reviewService.addReview(any(RequestAddReviewDTO.class))).thenReturn(response);
+
+        // Act
+        mockMvc.perform(post("/api/reviews/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+
+        // Verify that the service method was called once with any RequestAddReviewDTO object
+        verify(reviewService, never()).addReview(any(RequestAddReviewDTO.class));
+    }
+
+    @Test
+    void shouldUpdateReview() throws Exception {
+        // Arrange
+        int id = 1;
+        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "ccc", null);
+        ResponseUpdateReviewDTO response = new ResponseUpdateReviewDTO(id, 1, 1, 4, "ccc", null);
+
+        // Use ArgumentMatchers.any() to match any RequestUpdateReviewDTO object
+        when(reviewService.updateReview(eq(id),any(RequestUpdateReviewDTO.class))).thenReturn(response);
+
+        // Act
+        mockMvc.perform(put("/api/reviews/update/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.reviewId").value(id))
+                .andExpect(jsonPath("$.offerId").value(1))
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.rating").value(4))
+                .andExpect(jsonPath("$.comment").value("ccc"))
+                .andExpect(jsonPath("$.createdDate").doesNotExist())
+                .andReturn();
+
+        // Verify that the service method was called once with any RequestUpdateReviewDTO object and the specific reviewId
+        verify(reviewService, times(1)).updateReview(eq(id),any(RequestUpdateReviewDTO.class));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenUpdateReviewValidationsFailed() throws Exception {
+        // Arrange
+        int id = 1;
+        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "c", null);
+        ResponseUpdateReviewDTO response = new ResponseUpdateReviewDTO(id, 1, 1, 4, "c", null);
+
+        // Use ArgumentMatchers.any() to match any RequestUpdateReviewDTO object
+        when(reviewService.updateReview(eq(id),any(RequestUpdateReviewDTO.class))).thenReturn(response);
+
+        // Act
+        mockMvc.perform(put("/api/reviews/update/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Verify that the service method was called once with any RequestUpdateReviewDTO object and the specific reviewId
+        verify(reviewService, never()).updateReview(eq(id),any(RequestUpdateReviewDTO.class));
+    }
+
+
 
 
 

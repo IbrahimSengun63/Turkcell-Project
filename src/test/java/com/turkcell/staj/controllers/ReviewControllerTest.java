@@ -5,10 +5,7 @@ import com.turkcell.staj.business.abstracts.ReviewService;
 import com.turkcell.staj.controllers.responseWrappers.GetOfferReviewsWrapper;
 import com.turkcell.staj.dtos.review.requests.RequestAddReviewDTO;
 import com.turkcell.staj.dtos.review.requests.RequestUpdateReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseAddReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllOfferReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseGetAllUserReviewDTO;
-import com.turkcell.staj.dtos.review.responses.ResponseUpdateReviewDTO;
+import com.turkcell.staj.dtos.review.responses.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,7 +87,7 @@ class ReviewControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestForInvalidUserIdWhenGettingOfferReviews() throws Exception {
+    void shouldReturnBadRequestForInvalidOfferIdWhenGettingOfferReviews() throws Exception {
         // Arrange
         int invalidOfferId = -1;
 
@@ -253,6 +250,55 @@ class ReviewControllerTest {
         verify(reviewService, never()).updateReview(eq(id),any(RequestUpdateReviewDTO.class));
     }
 
+    @Test
+    void shouldReturnBadRequestForInvalidIdWhenUpdatingReviews() throws Exception {
+        // Arrange
+        int id = -1;
+        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "ccc", null);
+        ResponseUpdateReviewDTO response = new ResponseUpdateReviewDTO(id, 1, 1, 4, "ccc", null);
+
+        // Use ArgumentMatchers.any() to match any RequestUpdateReviewDTO object
+        when(reviewService.updateReview(eq(id),any(RequestUpdateReviewDTO.class))).thenReturn(response);
+        // Act & Assert
+        mockMvc.perform(put("/api/reviews/update/{id}", id))
+                .andExpect(status().isBadRequest());
+
+        verify(reviewService, never()).updateReview(id,request);
+    }
+
+    @Test
+    void shouldGetReview() throws Exception {
+        // Arrange
+        int id = 1;
+        ResponseGetReviewDTO response = new ResponseGetReviewDTO(id,1,1,5,"ccc",null);
+
+        when(reviewService.getReview(id)).thenReturn(response);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/reviews/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.reviewId").value(id))
+                .andExpect(jsonPath("$.offerId").value(1))
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.rating").value(5))
+                .andExpect(jsonPath("$.comment").value("ccc"))
+                .andExpect(jsonPath("$.createdDate").doesNotExist())
+                .andReturn();
+
+        verify(reviewService, times(1)).getReview(id);
+    }
+
+    @Test
+    void shouldReturnBadRequestForInvalidIdWhenGettingReviews() throws Exception {
+        // Arrange
+        int id = -1;
+
+        // Act & Assert
+        mockMvc.perform(get("/api/reviews/{id}", id))
+                .andExpect(status().isBadRequest());
+
+        verify(reviewService, never()).getReview(id);
+    }
 
 
 

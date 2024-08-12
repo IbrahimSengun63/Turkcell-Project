@@ -2,15 +2,13 @@ package com.turkcell.staj.mappers;
 
 import com.turkcell.staj.dtos.offers.requests.RequestAddOfferDTO;
 import com.turkcell.staj.dtos.offers.requests.RequestUpdateOfferDTO;
-import com.turkcell.staj.dtos.offers.responses.ResponseAddOfferDTO;
-import com.turkcell.staj.dtos.offers.responses.ResponseUpdateOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.GetAllResponseOfferDTO;
 import com.turkcell.staj.dtos.offers.responses.GetResponseOfferDTO;
+import com.turkcell.staj.dtos.offers.responses.ResponseAddOfferDTO;
+import com.turkcell.staj.dtos.offers.responses.ResponseUpdateOfferDTO;
 import com.turkcell.staj.entities.Offer;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

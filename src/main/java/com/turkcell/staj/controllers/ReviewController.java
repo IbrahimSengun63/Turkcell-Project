@@ -51,14 +51,14 @@ public class ReviewController {
     @PutMapping("/update/{id}")
     @CachePut(key = "#id")
     @CacheEvict(value = {"offer_review_list","user_review_list"}, allEntries = true)
-    public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
+    public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
         ResponseUpdateReviewDTO response = reviewService.updateReview(id,request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     @Cacheable(key = "#id")
-    public ResponseEntity<ResponseGetReviewDTO> getReview(@PathVariable @Valid int id) {
+    public ResponseEntity<ResponseGetReviewDTO> getReview(@PathVariable @Valid @Min(value = 1) int id) {
         ResponseGetReviewDTO response = reviewService.getReview(id);
         return ResponseEntity.ok(response);
     }

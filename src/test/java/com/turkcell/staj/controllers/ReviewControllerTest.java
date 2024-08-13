@@ -186,7 +186,7 @@ class ReviewControllerTest {
     @Test
     void shouldReturnBadRequestWhenAddReviewValidationsFailed() throws Exception {
         // Arrange
-        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, -5, "c", null);
+        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, -5, "c");
         ResponseAddReviewDTO response = new ResponseAddReviewDTO(1, 1, 1, -5, "c", null);
 
         // Use ArgumentMatchers.any() to match any RequestAddReviewDTO object

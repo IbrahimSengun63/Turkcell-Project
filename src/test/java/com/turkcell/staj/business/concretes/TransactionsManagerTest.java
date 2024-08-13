@@ -98,7 +98,7 @@ class TransactionsManagerTest {
         double discountAmount = 10.0;
         double userBalanceAfterTransaction = 0.0;
 
-        RequestAddTransactionDTO request = new RequestAddTransactionDTO(offerId, userId, status, date);
+        RequestAddTransactionDTO request = new RequestAddTransactionDTO(offerId, userId, status);
         ResponseAddTransactionDTO response = new ResponseAddTransactionDTO(transactionId, offerId, userId, null, price, status, date, null);
 
         // when
@@ -155,31 +155,6 @@ class TransactionsManagerTest {
 
     }
 
-    @Test
-    void shouldFailToAddTransactionWhenTransactionCreatedDateIsNotNow() {
-        // arrange
-        Status status = Status.COMPLETED;
-        LocalDate date = LocalDate.now().plusDays(1);
-        Transaction transaction = new Transaction();
-        transaction.setStatus(status);
-        transaction.setCreatedDate(date);
-
-        RequestAddTransactionDTO request = new RequestAddTransactionDTO();
-        request.setStatus(status);
-        request.setCreatedDate(date);
-
-        // when
-        when(transactionMapper.requestAddTransactionDtoToTransaction(request)).thenReturn(transaction);
-
-        // act & assert
-        assertThrows(BusinessException.class, () -> transactionsManager.addTransaction(request));
-
-        // verify
-        verify(transactionMapper, times(1)).requestAddTransactionDtoToTransaction(request);
-        verify(transactionMapper, never()).transactionToResponseAddTransactionDto(any());
-        verify(userService, never()).saveUser(any());
-        verify(transactionRepository, never()).save(any());
-    }
 
     @Test
     void shouldFailToAddTransactionWhenOfferIsNull() {

@@ -80,7 +80,7 @@ class TransactionControllerTest {
     @Test
     void shouldReturnBadRequestWhenAddTransactionValidationsFailed() throws Exception {
         // Arrange
-        RequestAddTransactionDTO request = new RequestAddTransactionDTO(-1, -1, Status.COMPLETED, null);
+        RequestAddTransactionDTO request = new RequestAddTransactionDTO(-1, -1, Status.COMPLETED);
 
         // Act
         mockMvc.perform(post("/api/transactions/add")

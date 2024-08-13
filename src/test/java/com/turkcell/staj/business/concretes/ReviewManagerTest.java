@@ -228,7 +228,7 @@ class ReviewManagerTest {
 
         Review review = new Review(1, offer, user, 1, "s", LocalDate.now());
         Review savedReview = new Review(1, offer, user, 1, "s", LocalDate.now());
-        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, 1, "s", LocalDate.now());
+        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, 1, "s");
         ResponseAddReviewDTO response = new ResponseAddReviewDTO(1, 1, 1, 1, "s", LocalDate.now());
 
         // when

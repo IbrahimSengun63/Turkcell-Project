@@ -6,6 +6,7 @@ import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseReturnTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -162,5 +163,76 @@ class TransactionControllerTest {
         //
         verify(transactionService, never()).updateTransaction(anyInt(), any(RequestUpdateTransactionDTO.class));
     }
+
+    @Test
+    void shouldReturnTransaction() throws Exception {
+        // Arrange
+        int transactionId = 1;
+        int userId = 1;
+        ResponseReturnTransactionDTO response = new ResponseReturnTransactionDTO(
+                transactionId,
+                1,
+                userId,
+                22.0,
+                Status.RETURNED,
+                LocalDate.now(),
+                44.0
+        );
+
+        // when
+        when(transactionService.returnTransaction(eq(transactionId), eq(userId))).thenReturn(response);
+
+        // Act
+        mockMvc.perform(put("/api/transactions/{id}/return", transactionId)
+                        .param("userId", String.valueOf(userId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.transactionId").value(transactionId))
+                .andExpect(jsonPath("$.offerId").value(1))
+                .andExpect(jsonPath("$.userId").value(userId))
+                .andExpect(jsonPath("$.price").value(22.0))
+                .andExpect(jsonPath("$.status").value("RETURNED"))
+                .andExpect(jsonPath("$.createdDate").isNotEmpty())
+                .andExpect(jsonPath("$.userBalanceAfterTransaction").value(44.0))
+                .andReturn();
+
+        // Verify
+        verify(transactionService, times(1)).returnTransaction(eq(transactionId), eq(userId));
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenReturnTransactionPathVariableValidationFails() throws Exception {
+        // Arrange
+        int invalidTransactionId = -1;
+        int userId = 1;
+
+        // Act
+        mockMvc.perform(put("/api/transactions/{id}/return", invalidTransactionId)
+                        .param("userId", String.valueOf(userId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Verify
+        verify(transactionService, never()).returnTransaction(anyInt(), anyInt());
+    }
+
+    @Test
+    void shouldReturnBadRequestWhenReturnTransactionRequestParamValidationFails() throws Exception {
+        // Arrange
+        int transactionId = 1;
+        int invalidUserId = 0;
+
+        // Act
+        mockMvc.perform(put("/api/transactions/{id}/return", transactionId)
+                        .param("userId", String.valueOf(invalidUserId))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Verify
+        verify(transactionService, never()).returnTransaction(anyInt(), anyInt());
+    }
+
 
 }

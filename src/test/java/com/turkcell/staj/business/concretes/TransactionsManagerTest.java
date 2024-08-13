@@ -4,11 +4,13 @@ import com.turkcell.staj.business.abstracts.DiscountService;
 import com.turkcell.staj.business.abstracts.OfferService;
 import com.turkcell.staj.business.abstracts.UserService;
 import com.turkcell.staj.business.rules.TransactionBusinessRules;
+import com.turkcell.staj.controllers.responseWrappers.GetUserTransactionsWrapper;
 import com.turkcell.staj.core.enums.Status;
 import com.turkcell.staj.core.exceptions.BusinessException;
 import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseGetAllUserTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
@@ -24,6 +26,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -483,9 +486,113 @@ class TransactionsManagerTest {
         assertThrows(BusinessException.class, () -> transactionsManager.updateTransaction(transactionId, request));
 
         //verify
-        verify(transactionRepository,times(1)).findById(transactionId);
-        verify(userService,never()).saveUser(any());
+        verify(transactionRepository, times(1)).findById(transactionId);
+        verify(userService, never()).saveUser(any());
     }
 
+    @Test
+    void shouldGetUserTransactionHistory() {
 
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        Status status = Status.COMPLETED;
+        double price = 2.0;
+
+        Transaction transaction1 = new Transaction();
+        transaction1.setUser(user);
+        transaction1.setPrice(price);
+        transaction1.setStatus(status);
+
+        Transaction transaction2 = new Transaction();
+        transaction2.setUser(user);
+        transaction2.setPrice(price);
+        transaction2.setStatus(status);
+
+        List<Transaction> transactions = List.of(transaction1, transaction2);
+
+        ResponseGetAllUserTransactionDTO response1 = new ResponseGetAllUserTransactionDTO();
+        response1.setUserId(userId);
+        response1.setPrice(price);
+        response1.setStatus(status);
+
+        ResponseGetAllUserTransactionDTO response2 = new ResponseGetAllUserTransactionDTO();
+        response2.setUserId(userId);
+        response2.setPrice(price);
+        response2.setStatus(status);
+
+        ResponseGetAllUserTransactionDTO response3 = new ResponseGetAllUserTransactionDTO();
+        response3.setUserId(userId);
+        response3.setPrice(price);
+        response3.setStatus(Status.CANCELED);
+
+        List<ResponseGetAllUserTransactionDTO> responses = List.of(response1, response2, response3);
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(transactionRepository.findByUserId(userId)).thenReturn(transactions);
+        when(transactionMapper.transactionListToResponseDtoList(transactions)).thenReturn(responses);
+
+        // act
+        GetUserTransactionsWrapper result = transactionsManager.getHistory(userId);
+
+        // assert
+        assertEquals(4.0, result.getTotalPurchaseHistory());
+        assertEquals(responses.size(), result.getUserTransactions().size());
+
+        // verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(transactionRepository, times(1)).findByUserId(1);
+        verify(transactionMapper, times(1)).transactionListToResponseDtoList(transactions);
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenUserHasNoTransactionHistory() {
+
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        List<Transaction> transactions = List.of();
+
+        List<ResponseGetAllUserTransactionDTO> responses = List.of();
+
+        // when
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(transactionRepository.findByUserId(userId)).thenReturn(transactions);
+        when(transactionMapper.transactionListToResponseDtoList(transactions)).thenReturn(responses);
+
+        // act
+        GetUserTransactionsWrapper result = transactionsManager.getHistory(userId);
+
+        // assert
+        assertEquals(0.0, result.getTotalPurchaseHistory());
+        assertEquals(responses.size(), result.getUserTransactions().size());
+
+        // verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(transactionRepository, times(1)).findByUserId(1);
+        verify(transactionMapper, times(1)).transactionListToResponseDtoList(transactions);
+    }
+
+    @Test
+    void shouldFailToGetUserTransactionHistoryWhenUserIsNull() {
+        // arrange
+        int userId = 1;
+
+        //when
+        when(userService.getUserById(userId)).thenThrow(new BusinessException("asd"));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.getHistory(userId));
+
+        // verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(transactionRepository, never()).findByUserId(1);
+        verify(transactionMapper, never()).transactionListToResponseDtoList(anyList());
+
+    }
 }

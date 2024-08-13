@@ -46,7 +46,7 @@ public class TransactionController {
         return ResponseEntity.ok(wrapper);
     }
 
-    @PutMapping("/{id}/return")
+    @PutMapping("/return/{id}")
     @CachePut(key = "#id")
     @CacheEvict(value = "transaction_list", allEntries = true)
     public ResponseEntity<ResponseReturnTransactionDTO> returnTransaction(

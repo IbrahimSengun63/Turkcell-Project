@@ -27,6 +27,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -772,5 +773,37 @@ class TransactionsManagerTest {
         assertFalse(result);
 
         verify(transactionRepository, times(1)).existsByUserIdAndOfferId(userId, offerId);
+    }
+
+    @Test
+    void shouldThrowErrorWhenOfferIsNotPurchasable() {
+        assertThrows(BusinessException.class, () -> TransactionBusinessRules.checkIfOfferIsPurchasable(false));
+    }
+
+    @Test
+    void shouldNotThrowExceptionWhenStatusIsCanceledOrRejected() {
+        // Array of statuses to test
+        Status[] statuses = {Status.CANCELED, Status.REJECTED};
+
+        for (Status status : statuses) {
+            assertDoesNotThrow(() -> {
+                TransactionBusinessRules.checkIfStatusCanceledOrRejected(status);
+            }, "Exception should not be thrown for status: " + status);
+        }
+    }
+
+    @Test
+    void shouldReturnZeroWhenThereIsNoCompletedTransactionInUserTransactions() {
+        Transaction transaction1 = new Transaction();
+        transaction1.setStatus(Status.REJECTED);
+        transaction1.setPrice(2.0);
+        Transaction transaction2 = new Transaction();
+        transaction2.setStatus(Status.CANCELED);
+        transaction2.setPrice(3.0);
+
+
+        List<Transaction> transactions = List.of(transaction1, transaction2);
+        double result = TransactionBusinessRules.calculateUserTotalPurchase(transactions);
+        assertEquals(0.0, result);
     }
 }

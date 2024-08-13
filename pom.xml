@@ -137,6 +137,47 @@
 				</configuration>
 			</plugin>
 
+			<!-- JaCoCo plugin configuration -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<executions>
+					<!-- Prepare JaCoCo agent to collect coverage data during tests -->
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- Generate coverage report after tests -->
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<formats>
+								<format>HTML</format>
+								<format>CSV</format>
+							</formats>
+							<excludes>
+								<!-- Exclude specific packages or classes -->
+								<exclude>com/turkcell/staj/mappers/**</exclude>
+								<exclude>com/turkcell/staj/core/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Ensure tests are run -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.3.1</version>
+			</plugin>
+
 		</plugins>
 	</build>
 

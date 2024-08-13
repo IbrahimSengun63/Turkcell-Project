@@ -173,4 +173,9 @@ class OfferManagerTest {
         verify(offerMapper, times(1)).offersToGetAllResponseOfferDto(offers);
     }
 
+    @Test
+    void shouldThrowErrorWhenOfferIsNotPurchasable() {
+        assertThrows(BusinessException.class, () -> OfferBusinessRules.checkIfOfferDeleted(false));
+    }
+
 }

@@ -186,7 +186,7 @@ class TransactionControllerTest {
         when(transactionService.returnTransaction(eq(transactionId), eq(userId))).thenReturn(response);
 
         // Act
-        mockMvc.perform(put("/api/transactions/{id}/return", transactionId)
+        mockMvc.perform(put("/api/transactions/return/{id}", transactionId)
                         .param("userId", String.valueOf(userId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -210,7 +210,7 @@ class TransactionControllerTest {
         int userId = 1;
 
         // Act
-        mockMvc.perform(put("/api/transactions/{id}/return", invalidTransactionId)
+        mockMvc.perform(put("/api/transactions/return/{id}", invalidTransactionId)
                         .param("userId", String.valueOf(userId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -227,7 +227,7 @@ class TransactionControllerTest {
         int invalidUserId = 0;
 
         // Act
-        mockMvc.perform(put("/api/transactions/{id}/return", transactionId)
+        mockMvc.perform(put("/api/transactions/return/{id}", transactionId)
                         .param("userId", String.valueOf(invalidUserId))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())

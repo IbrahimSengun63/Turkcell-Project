@@ -93,7 +93,7 @@ class OfferControllerTest {
         // Do
         int id = 3;
         // Act and Assert
-        mockMvc.perform(delete("/api/offers/delete/" + id))
+        mockMvc.perform(put("/api/offers/delete/" + id))
                 .andExpect(status().isOk())
                 .andReturn();
 

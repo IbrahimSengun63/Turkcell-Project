@@ -206,7 +206,7 @@ class ReviewControllerTest {
     void shouldUpdateReview() throws Exception {
         // Arrange
         int id = 1;
-        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "ccc", null);
+        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "ccc");
         ResponseUpdateReviewDTO response = new ResponseUpdateReviewDTO(id, 1, 1, 4, "ccc", null);
 
         // Use ArgumentMatchers.any() to match any RequestUpdateReviewDTO object
@@ -233,7 +233,7 @@ class ReviewControllerTest {
     void shouldReturnBadRequestWhenUpdateReviewValidationsFailed() throws Exception {
         // Arrange
         int id = 1;
-        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "c", null);
+        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "c");
         ResponseUpdateReviewDTO response = new ResponseUpdateReviewDTO(id, 1, 1, 4, "c", null);
 
         // Use ArgumentMatchers.any() to match any RequestUpdateReviewDTO object
@@ -254,7 +254,7 @@ class ReviewControllerTest {
     void shouldReturnBadRequestForInvalidIdWhenUpdatingReviews() throws Exception {
         // Arrange
         int id = -1;
-        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "ccc", null);
+        RequestUpdateReviewDTO request = new RequestUpdateReviewDTO(4, "ccc");
         ResponseUpdateReviewDTO response = new ResponseUpdateReviewDTO(id, 1, 1, 4, "ccc", null);
 
         // Use ArgumentMatchers.any() to match any RequestUpdateReviewDTO object

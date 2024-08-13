@@ -19,5 +19,4 @@ public class RequestUpdateReviewDTO {
     private Integer rating;
     @Size(min = 3, max = 255, message = "Comment length must be in the range {3,255}")
     private String comment;
-    private LocalDate createdDate;
 }

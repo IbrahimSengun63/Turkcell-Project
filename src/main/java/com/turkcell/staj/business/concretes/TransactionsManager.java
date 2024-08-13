@@ -42,7 +42,6 @@ public class TransactionsManager implements TransactionService {
         Transaction transaction = transactionMapper.requestAddTransactionDtoToTransaction(requestAddTransactionDTO);
         // checks
         TransactionBusinessRules.checkIfStatusCompleted(transaction.getStatus());
-        TransactionBusinessRules.checkIfDateIsCorrect(transaction.getCreatedDate());
         // get offer from db
         Offer offer = offerService.getOfferById(transaction.getOffer().getId());
         // checks offer status

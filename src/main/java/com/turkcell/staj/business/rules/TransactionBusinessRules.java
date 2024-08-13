@@ -34,13 +34,6 @@ public final class TransactionBusinessRules {
         }
     }
 
-    public static void checkIfDateIsCorrect(LocalDate date) {
-        if (!LocalDate.now().isEqual(date)) {
-            log.error("Transaction date must be now");
-            throw new BusinessException("Transaction date must be now");
-        }
-    }
-
     public static void checkIfStatusCanceledOrRejected(Status status) {
         if (!(status.equals(Status.CANCELED) || status.equals(Status.REJECTED))) {
             log.error("To update a transaction status must be CANCELED or REJECTED");

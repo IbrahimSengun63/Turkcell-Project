@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -40,12 +41,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BusinessExceptionDetails handleParseErrors(HttpServletRequest request) {
-        BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
-        businessExceptionDetails.setDetail("Parse Error");
-        businessExceptionDetails.setStatus("400");
-        businessExceptionDetails.setPath(request.getRequestURI());
-        return businessExceptionDetails;
+    public ValidationExceptionDetails handleParseErrors(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails();
+        validationExceptionDetails.setDetail("Parse Error");
+        validationExceptionDetails.setStatus("400");
+        validationExceptionDetails.setPath(request.getRequestURI());
+
+        Map<String, String> validationErrors = new HashMap<>();
+        String errorMessage = ex.getMessage();
+
+        // Add the error message to the validation errors map
+        validationErrors.put("message", errorMessage);
+
+        validationExceptionDetails.setValidationErrors(validationErrors);
+        return validationExceptionDetails;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -90,12 +99,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public BusinessExceptionDetails handleMethodArgumentTypeMismatchException(HttpServletRequest request) {
-        BusinessExceptionDetails businessExceptionDetails = new BusinessExceptionDetails();
-        businessExceptionDetails.setDetail("Method argument type error");
-        businessExceptionDetails.setStatus("400");
-        businessExceptionDetails.setPath(request.getRequestURI());
-        return businessExceptionDetails;
+    public ValidationExceptionDetails handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        ValidationExceptionDetails validationExceptionDetails = new ValidationExceptionDetails();
+        validationExceptionDetails.setDetail("Method argument type error");
+        validationExceptionDetails.setStatus("400");
+        validationExceptionDetails.setPath(request.getRequestURI());
+
+        Map<String, String> validationErrors = new HashMap<>();
+        // Extracting parameter name and error message
+        String parameterName = ex.getName();
+        String message = "Invalid value for parameter: " + parameterName;
+
+        // Add to validation errors map
+        validationErrors.put("parameter", message);
+
+        // You might want to extract path variable errors similarly
+        // For path variables, you need additional context from the request or exception
+
+        validationExceptionDetails.setValidationErrors(validationErrors);
+        return validationExceptionDetails;
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

@@ -20,5 +20,4 @@ public class RequestAddTransactionDTO {
     private int userId;
     @NotNull(message = "Status can't be null")
     private Status status;
-    private LocalDate createdDate;
 }

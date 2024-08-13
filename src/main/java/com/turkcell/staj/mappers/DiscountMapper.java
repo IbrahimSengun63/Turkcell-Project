@@ -20,7 +20,7 @@ public interface DiscountMapper {
     @Mapping(source = "offer.id", target = "offerId")
     ResponseAddDiscountDTO discountToResponseAddDiscountDto(Discount discount);
 
-    @Mapping(target = "offer.id", ignore = true)
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateDiscountFromRequestUpdateDiscountDto(RequestUpdateDiscountDTO requestUpdateDiscountDTO, @MappingTarget Discount discount);
     @Mapping(source = "id", target = "discountId")

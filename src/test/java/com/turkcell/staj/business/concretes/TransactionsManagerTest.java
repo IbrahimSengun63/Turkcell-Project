@@ -11,6 +11,7 @@ import com.turkcell.staj.dtos.transaction.requests.RequestAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.requests.RequestUpdateTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseAddTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseGetAllUserTransactionDTO;
+import com.turkcell.staj.dtos.transaction.responses.ResponseReturnTransactionDTO;
 import com.turkcell.staj.dtos.transaction.responses.ResponseUpdateTransactionDTO;
 import com.turkcell.staj.entities.Offer;
 import com.turkcell.staj.entities.Transaction;
@@ -594,5 +595,182 @@ class TransactionsManagerTest {
         verify(transactionRepository, never()).findByUserId(1);
         verify(transactionMapper, never()).transactionListToResponseDtoList(anyList());
 
+    }
+
+    @Test
+    void shouldReturnTransaction() {
+        // arrange
+        int userId = 1;
+        double userBalance = 8.0;
+        User user = new User();
+        user.setId(userId);
+        user.setBalance(userBalance);
+
+        int transactionId = 1;
+        Status status = Status.COMPLETED;
+        double price = 22.0;
+        Transaction transaction = new Transaction();
+        transaction.setId(transactionId);
+        transaction.setStatus(status);
+        transaction.setPrice(price);
+        transaction.setUser(user);
+
+        Transaction updatedTransaction = new Transaction();
+        updatedTransaction.setId(transactionId);
+        updatedTransaction.setUser(user);
+        updatedTransaction.setStatus(Status.RETURNED);
+        updatedTransaction.setPrice(price);
+
+
+        ResponseReturnTransactionDTO response = new ResponseReturnTransactionDTO();
+        response.setTransactionId(transactionId);
+        response.setStatus(Status.RETURNED);
+        response.setUserId(userId);
+        response.setPrice(price);
+
+        // when
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
+        when(userService.getUserById(userId)).thenReturn(user);
+        doNothing().when(userService).saveUser(user);
+        when(transactionRepository.save(transaction)).thenReturn(updatedTransaction);
+        when(transactionMapper.transactionToResponseReturnTransactionDto(updatedTransaction)).thenReturn(response);
+
+
+        // act
+        ResponseReturnTransactionDTO result = transactionsManager.returnTransaction(transactionId, userId);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(30, result.getUserBalanceAfterTransaction());
+
+        // verify
+        verify(transactionRepository, times(1)).findById(transactionId);
+        verify(userService, times(1)).saveUser(user);
+        verify(transactionMapper, times(1)).transactionToResponseReturnTransactionDto(updatedTransaction);
+        verify(transactionRepository, times(1)).save(transaction);
+    }
+
+    @Test
+    void shouldFailToReturnTransactionWhenTransactionIsNull() {
+        // arrange
+        int transactionId = 1;
+        int userId = 1;
+
+        //when
+        when(transactionRepository.findById(transactionId)).thenThrow(new BusinessException(""));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.returnTransaction(transactionId, userId));
+
+        // verify
+        verify(userService, never()).getUserById(userId);
+    }
+
+    @Test
+    void shouldFailToReturnTransactionWhenTransactionDoesNotBelongUser() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        int transactionId = 1;
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.getUser().setId(2);
+
+        //when
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.returnTransaction(transactionId, userId));
+
+        // verify
+        verify(userService, never()).getUserById(userId);
+    }
+
+    @Test
+    void shouldFailToReturnTransactionWhenTransactionStatusIsNotCompleted() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        int transactionId = 1;
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setStatus(Status.RETURNED);
+        transaction.getUser().setId(userId);
+
+        //when
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
+
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.returnTransaction(transactionId, userId));
+
+        // verify
+        verify(userService, never()).getUserById(userId);
+
+
+    }
+
+    @Test
+    void shouldFailToReturnTransactionWhenUserIsNull() {
+        // arrange
+        int userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        int transactionId = 1;
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setStatus(Status.COMPLETED);
+
+        //when
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transaction));
+        when(userService.getUserById(userId)).thenThrow(new BusinessException(""));
+        // act & assert
+        assertThrows(BusinessException.class, () -> transactionsManager.returnTransaction(transactionId, userId));
+
+        // verify
+        verify(userService, times(1)).getUserById(userId);
+        verify(userService, never()).saveUser(user);
+
+
+    }
+
+    @Test
+    void shouldReturnTrueIfUserPurchasedTheOffer() {
+        // arrange
+        int userId = 1;
+        int offerId = 1;
+
+        // when
+        when(transactionRepository.existsByUserIdAndOfferId(userId, offerId)).thenReturn(true);
+
+        // act
+        boolean result = transactionsManager.checkIfUserPurchasedOffer(userId, offerId);
+
+        // assert
+        assertTrue(result);
+
+        verify(transactionRepository, times(1)).existsByUserIdAndOfferId(userId, offerId);
+    }
+
+    @Test
+    void shouldReturnFalseIfUserDidNotPurchasedTheOffer() {
+        // arrange
+        int userId = 1;
+        int offerId = 1;
+
+        // when
+        when(transactionRepository.existsByUserIdAndOfferId(userId, offerId)).thenReturn(false);
+
+        // act
+        boolean result = transactionsManager.checkIfUserPurchasedOffer(userId, offerId);
+
+        // assert
+        assertFalse(result);
+
+        verify(transactionRepository, times(1)).existsByUserIdAndOfferId(userId, offerId);
     }
 }

@@ -27,5 +27,6 @@ public class RequestAddReviewDTO {
     private Integer rating;
     @Size(min = 3, max = 255, message = "Comment length must be in the range {3,255}")
     private String comment;
+    @NotNull(message = "Date can't be null")
     private LocalDate createdDate;
 }

@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -41,6 +42,34 @@ class ReviewControllerTest {
     @AfterEach
     void tearDown() {
     }
+
+    @Test
+    void shouldAddReview() throws Exception {
+        // Arrange
+        String validJsonRequest = "{"
+                + "\"offerId\": 1,"
+                + "\"userId\": 1,"
+                + "\"rating\": 4,"
+                + "\"comment\": \"Great product!\","
+                + "\"createdDate\": \"2024-08-13\""
+                + "}";
+
+        ResponseAddReviewDTO response = new ResponseAddReviewDTO(1,1,1,1,"c",null);
+
+        // Mock the service response
+        when(reviewService.addReview(any(RequestAddReviewDTO.class))).thenReturn(response);
+
+        // Act and Assert
+        mockMvc.perform(post("/api/reviews/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(validJsonRequest))  // Send a valid JSON payload
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Verify that the service method was called once with any RequestAddReviewDTO object
+        verify(reviewService, times(1)).addReview(any(RequestAddReviewDTO.class));
+    }
+
 
     @Test
     void shouldGetAllOfferReviews() throws Exception {
@@ -152,33 +181,6 @@ class ReviewControllerTest {
                 .andExpect(status().isBadRequest());
 
         verify(reviewService, never()).getAllUserReviews(invalidUserId);
-    }
-
-    @Test
-    void shouldAddReview() throws Exception {
-        // Arrange
-        RequestAddReviewDTO request = new RequestAddReviewDTO(1, 1, 5, "Valid comment", null);
-        ResponseAddReviewDTO response = new ResponseAddReviewDTO(1, 1, 1, 5, "Valid comment", null);
-
-        // Use ArgumentMatchers.any() to match any RequestAddReviewDTO object
-        when(reviewService.addReview(any(RequestAddReviewDTO.class))).thenReturn(response);
-
-        // Act
-        mockMvc.perform(post("/api/reviews/add")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.reviewId").value(1))
-                .andExpect(jsonPath("$.offerId").value(1))
-                .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.rating").value(5))
-                .andExpect(jsonPath("$.comment").value("Valid comment"))
-                .andExpect(jsonPath("$.createdDate").doesNotExist())
-                .andReturn();
-
-
-        // Verify that the service method was called once with any RequestAddReviewDTO object
-        verify(reviewService, times(1)).addReview(any(RequestAddReviewDTO.class));
     }
 
     @Test

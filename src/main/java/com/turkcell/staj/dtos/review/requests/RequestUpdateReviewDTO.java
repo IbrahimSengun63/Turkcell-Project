@@ -16,8 +16,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestUpdateReviewDTO {
+    @Min(value = 1, message = "Rating must be in the range {1, 5}")
+    @Max(value = 5, message = "Rating must be in the range {1, 5}")
     private Integer rating;
     @Size(min = 3, max = 255, message = "Comment length must be in the range {3,255}")
     private String comment;
-    private LocalDate createdDate;
 }

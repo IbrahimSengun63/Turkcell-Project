@@ -41,7 +41,7 @@ public class OfferController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping("/delete/{id}")
     @CachePut(key = "#id")
     @CacheEvict(value = "offer_list", allEntries = true)
     public ResponseEntity<String> deleteOffer(@PathVariable @Valid @Min(value = 1) int id) {

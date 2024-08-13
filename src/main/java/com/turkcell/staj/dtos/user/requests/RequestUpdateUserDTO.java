@@ -20,4 +20,5 @@ public class RequestUpdateUserDTO {
     private String surname;
     @PositiveOrZero(message = "Balance must be zero or positive")
     private Double balance;
+
 }

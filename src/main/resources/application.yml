@@ -3,7 +3,7 @@ spring:
     name: staj
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/staj
+    url: jdbc:postgresql://postgres:5432/staj
     username: postgres
     password: 12345
 
@@ -14,3 +14,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+
+server:
+  port: 8081

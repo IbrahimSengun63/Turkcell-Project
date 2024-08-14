@@ -57,9 +57,13 @@
 
 #### Validasyon hataları
 
+![validation_sample_error](images/exception/validation_sample.png)
+
 ![validation_error_management](images/exception/validation_exception_management.png)
 
 #### İş katmanı hataları
+
+![business_error_sample](images/exception/business_exception_sample.png)
 
 ![Business_error_management](images/exception/business-exception-management.png)
 

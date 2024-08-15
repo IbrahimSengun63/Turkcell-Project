@@ -27,6 +27,13 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    @PostMapping("/add")
+    @CacheEvict(value = {"offer_review_list", "user_review_list"}, allEntries = true, beforeInvocation = false)
+    public ResponseEntity<ResponseAddReviewDTO> addReview(@Valid @RequestBody RequestAddReviewDTO request) {
+        ResponseAddReviewDTO response = reviewService.addReview(request);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/offer/{offerId}")
     @Cacheable(value = "offer_review_list")
     public ResponseEntity<GetOfferReviewsWrapper> getAllOfferReviews(@PathVariable @Valid @Min(value = 1) int offerId) {
@@ -34,25 +41,11 @@ public class ReviewController {
         return ResponseEntity.ok(wrapper);
     }
 
-    @GetMapping("/user/{userId}")
-    @Cacheable(value = "user_review_list")
-    public ResponseEntity<List<ResponseGetAllUserReviewDTO>> getAllUserReviews(@PathVariable @Valid @Min(value = 1) int userId) {
-        List<ResponseGetAllUserReviewDTO> responses = reviewService.getAllUserReviews(userId);
-        return ResponseEntity.ok(responses);
-    }
-
-    @PostMapping("/add")
-    @CacheEvict(value = {"offer_review_list","user_review_list"}, allEntries = true)
-    public ResponseEntity<ResponseAddReviewDTO> addReview(@Valid @RequestBody RequestAddReviewDTO request) {
-        ResponseAddReviewDTO response = reviewService.addReview(request);
-        return ResponseEntity.ok(response);
-    }
-
     @PutMapping("/update/{id}")
     @CachePut(key = "#id")
-    @CacheEvict(value = {"offer_review_list","user_review_list"}, allEntries = true)
+    @CacheEvict(value = {"offer_review_list", "user_review_list"}, allEntries = true)
     public ResponseEntity<ResponseUpdateReviewDTO> updateReview(@PathVariable @Valid @Min(value = 1) int id, @Valid @RequestBody RequestUpdateReviewDTO request) {
-        ResponseUpdateReviewDTO response = reviewService.updateReview(id,request);
+        ResponseUpdateReviewDTO response = reviewService.updateReview(id, request);
         return ResponseEntity.ok(response);
     }
 
@@ -62,4 +55,12 @@ public class ReviewController {
         ResponseGetReviewDTO response = reviewService.getReview(id);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/user/{userId}")
+    @Cacheable(value = "user_review_list")
+    public ResponseEntity<List<ResponseGetAllUserReviewDTO>> getAllUserReviews(@PathVariable @Valid @Min(value = 1) int userId) {
+        List<ResponseGetAllUserReviewDTO> responses = reviewService.getAllUserReviews(userId);
+        return ResponseEntity.ok(responses);
+    }
+
 }

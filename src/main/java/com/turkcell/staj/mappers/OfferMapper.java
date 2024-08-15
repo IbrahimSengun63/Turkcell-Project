@@ -14,8 +14,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OfferMapper {
-    OfferMapper INSTANCE = Mappers.getMapper(OfferMapper.class);
-
     Offer requestAddOfferDtoToOffer(RequestAddOfferDTO requestAddOfferDTO);
 
     @Mapping(source = "id", target = "offerId")

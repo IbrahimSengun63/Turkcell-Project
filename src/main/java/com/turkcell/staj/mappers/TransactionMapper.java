@@ -14,8 +14,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {
-    TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
-
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "offerId", target = "offer.id")
     Transaction requestAddTransactionDtoToTransaction(RequestAddTransactionDTO requestAddTransactionDTO);

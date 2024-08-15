@@ -11,8 +11,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
-    ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
-
     @Mapping(source = "id", target = "reviewId")
     @Mapping(source = "offer.id", target = "offerId")
     @Mapping(source = "user.id", target = "userId")

@@ -38,30 +38,25 @@ public class TransactionsManager implements TransactionService {
 
     @Override
     public ResponseAddTransactionDTO addTransaction(RequestAddTransactionDTO requestAddTransactionDTO) {
-        // req to transaction mapping
         Transaction transaction = transactionMapper.requestAddTransactionDtoToTransaction(requestAddTransactionDTO);
-        // checks
+        // Checks
         TransactionBusinessRules.checkIfStatusCompleted(transaction.getStatus());
-        // get offer from db
         Offer offer = offerService.getOfferById(transaction.getOffer().getId());
-        // checks offer status
         TransactionBusinessRules.checkIfOfferIsPurchasable(offer.getStatus());
-        // get offer discount amount
+        // Calculate transaction amount
         double discountAmount = discountService.getOfferDiscountAmount(offer);
-        // set transaction price with offer price
         transaction.setPrice(offer.getPrice() - discountAmount);
-        // get user from db
+        // Check if user has enough balance
         User user = userService.getUserById(transaction.getUser().getId());
-        // check user balance
         TransactionBusinessRules.checkIfUserHasEnoughBalance(user.getBalance(), transaction.getPrice());
-        // set user balance
+        // Update user balance
         user.setBalance(user.getBalance() - transaction.getPrice());
-        // update user
         userService.saveUser(user);
-        // add transaction
+        // Save transaction record
         Transaction savedTransaction = transactionRepository.save(transaction);
         log.info("Transaction with ID {} has been successfully saved to the database.", savedTransaction.getId());
         ResponseAddTransactionDTO responseAddTransactionDTO = transactionMapper.transactionToResponseAddTransactionDto(savedTransaction);
+        // Set fields not included in the entity
         responseAddTransactionDTO.setUserBalanceAfterTransaction(user.getBalance());
         responseAddTransactionDTO.setOfferPrice(offer.getPrice());
         return responseAddTransactionDTO;

@@ -53,6 +53,12 @@
 
 ![veri tabanı](images/db/db.png)
 
+# Use case diyagramı
+
+---
+
+![use_case](images/use_case/staj-usecase.png)
+
 # Hata yönetimi
 
 #### Validasyon hataları

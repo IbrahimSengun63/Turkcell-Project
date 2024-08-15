@@ -12,14 +12,11 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface DiscountMapper {
-    DiscountMapper INSTANCE = Mappers.getMapper(DiscountMapper.class);
-
     @Mapping(source = "offerId", target = "offer.id")
     Discount requestAddDiscountDtoToDiscount(RequestAddDiscountDTO requestAddDiscountDTO);
     @Mapping(source = "id", target = "discountId")
     @Mapping(source = "offer.id", target = "offerId")
     ResponseAddDiscountDTO discountToResponseAddDiscountDto(Discount discount);
-
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateDiscountFromRequestUpdateDiscountDto(RequestUpdateDiscountDTO requestUpdateDiscountDTO, @MappingTarget Discount discount);

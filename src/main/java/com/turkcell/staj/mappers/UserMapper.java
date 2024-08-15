@@ -12,8 +12,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
     User requestAddUserDtoToUser(RequestAddUserDTO requestAddUserDTO);
 
     @Mapping(source = "id", target = "userId")
